@@ -1,0 +1,1826 @@
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP2C9_PREPARE)
+> print("y")
+[1] "y"
+> count_total_PREPARE_ADRs <- sum(ADR_master$PREPARE_drugs == 1)
+> print(count_total_PREPARE_ADRs)
+[1] 115789
+> count_ones <- colSums(ADR_master[, c("CYP2C19_PREPARE", "CYP2D6_PREPARE", 
++ "SLCO1B1_PREPARE")] == 1)
+> print(count_ones)
+CYP2C19_PREPARE  CYP2D6_PREPARE SLCO1B1_PREPARE 
+          23443           46419           17537 
+> count_total_CYP2D6_ADRs <- sum(ADR_master$CYP2D6_PREPARE == 1)
+> print(count_total_CYP2D6_ADRs)
+[1] 46419
+> count_total_CYP2C19_ADRs <- sum(ADR_master$CYP2C19_PREPARE == 
++ 1)
+> print(count_total_CYP2C19_ADRs)
+[1] 23443
+> count_total_CYPSLCO1B1_ADRs <- sum(ADR_master$SLCO1B1_PREPARE == 
++ 1)
+> print(count_total_CYPSLCO1B1_ADRs)
+[1] 17537
+> print(colnames(ADR_master))
+   [1] "ADR"                              "SEX_1"                           
+   [3] "AGE_10_1"                         "RECVD_YEAR_1"                    
+   [5] "SENDER_TYPE_1"                    "CONSUMER_YN_1"                   
+   [7] "HCP_YN_1"                         "NONSERIOUS_SERIOUS_FATAL_NSF_1.x"
+   [9] "SEQ_1.x"                          "SEQ_2.x"                         
+  [11] "SEQ_3.x"                          "ROUTE_1"                         
+  [13] "ROUTE_2"                          "ROUTE_3"                         
+  [15] "MULTICONST_1"                     "MULTICONST_2"                    
+  [17] "MULTICONST_3"                     "NONSERIOUS_SERIOUS_FATAL_NSF_1.y"
+  [19] "NONSERIOUS_SERIOUS_FATAL_NSF_2"   "NONSERIOUS_SERIOUS_FATAL_NSF_3"  
+  [21] "SEQ_1.y"                          "SEQ_2.y"                         
+  [23] "SEQ_3.y"                          "SEQ_4"                           
+  [25] "SEQ_5"                            "SEQ_6"                           
+  [27] "SEQ_7"                            "SEQ_8"                           
+  [29] "SEQ_9"                            "SEQ_10"                          
+  [31] "SEQ_11"                           "SEQ_12"                          
+  [33] "SEQ_13"                           "SEQ_14"                          
+  [35] "SEQ_15"                           "SEQ_16"                          
+  [37] "SEQ_17"                           "SEQ_18"                          
+  [39] "SEQ_19"                           "SEQ_20"                          
+  [41] "SEQ_21"                           "PT_1"                            
+  [43] "PT_2"                             "PT_3"                            
+  [45] "PT_4"                             "PT_5"                            
+  [47] "PT_6"                             "PT_7"                            
+  [49] "PT_8"                             "PT_9"                            
+  [51] "PT_10"                            "PT_11"                           
+  [53] "PT_12"                            "PT_13"                           
+  [55] "PT_14"                            "PT_15"                           
+  [57] "PT_16"                            "PT_17"                           
+  [59] "PT_18"                            "PT_19"                           
+  [61] "PT_20"                            "PT_21"                           
+  [63] "HLT_1"                            "HLT_2"                           
+  [65] "HLT_3"                            "HLT_4"                           
+  [67] "HLT_5"                            "HLT_6"                           
+  [69] "HLT_7"                            "HLT_8"                           
+  [71] "HLT_9"                            "HLT_10"                          
+  [73] "HLT_11"                           "HLT_12"                          
+  [75] "HLT_13"                           "HLT_14"                          
+  [77] "HLT_15"                           "HLT_16"                          
+  [79] "HLT_17"                           "HLT_18"                          
+  [81] "HLT_19"                           "HLT_20"                          
+  [83] "HLT_21"                           "HLGT_1"                          
+  [85] "HLGT_2"                           "HLGT_3"                          
+  [87] "HLGT_4"                           "HLGT_5"                          
+  [89] "HLGT_6"                           "HLGT_7"                          
+  [91] "HLGT_8"                           "HLGT_9"                          
+  [93] "HLGT_10"                          "HLGT_11"                         
+  [95] "HLGT_12"                          "HLGT_13"                         
+  [97] "HLGT_14"                          "HLGT_15"                         
+  [99] "HLGT_16"                          "HLGT_17"                         
+ [101] "HLGT_18"                          "HLGT_19"                         
+ [103] "HLGT_20"                          "HLGT_21"                         
+ [105] "SOC_ABBREV_1"                     "SOC_ABBREV_2"                    
+ [107] "SOC_ABBREV_3"                     "SOC_ABBREV_4"                    
+ [109] "SOC_ABBREV_5"                     "SOC_ABBREV_6"                    
+ [111] "SOC_ABBREV_7"                     "SOC_ABBREV_8"                    
+ [113] "SOC_ABBREV_9"                     "SOC_ABBREV_10"                   
+ [115] "SOC_ABBREV_11"                    "SOC_ABBREV_12"                   
+ [117] "SOC_ABBREV_13"                    "SOC_ABBREV_14"                   
+ [119] "SOC_ABBREV_15"                    "SOC_ABBREV_16"                   
+ [121] "SOC_ABBREV_17"                    "SOC_ABBREV_18"                   
+ [123] "SOC_ABBREV_19"                    "SOC_ABBREV_20"                   
+ [125] "SOC_ABBREV_21"                    "FATAL_YN_1"                      
+ [127] "FATAL_YN_2"                       "FATAL_YN_3"                      
+ [129] "FATAL_YN_4"                       "FATAL_YN_5"                      
+ [131] "FATAL_YN_6"                       "FATAL_YN_7"                      
+ [133] "FATAL_YN_8"                       "FATAL_YN_9"                      
+ [135] "FATAL_YN_10"                      "FATAL_YN_11"                     
+ [137] "FATAL_YN_12"                      "FATAL_YN_13"                     
+ [139] "FATAL_YN_14"                      "FATAL_YN_15"                     
+ [141] "FATAL_YN_16"                      "FATAL_YN_17"                     
+ [143] "FATAL_YN_18"                      "FATAL_YN_19"                     
+ [145] "FATAL_YN_20"                      "FATAL_YN_21"                     
+ [147] "DRUG"                             "SEQ_3"                           
+ [149] "SEQ_2"                            "SEQ_4.x"                         
+ [151] "ROUTE_4"                          "MULTICONST_4"                    
+ [153] "NONSERIOUS_SERIOUS_FATAL_NSF_4"   "SEQ_4.y"                         
+ [155] "SEQ_5.x"                          "SEQ_6.x"                         
+ [157] "SEQ_7.x"                          "SEQ_8.x"                         
+ [159] "SEQ_9.x"                          "SEQ_10.x"                        
+ [161] "SEQ_11.x"                         "SEQ_12.x"                        
+ [163] "SEQ_13.x"                         "SEQ_14.x"                        
+ [165] "ROUTE_5"                          "ROUTE_6"                         
+ [167] "ROUTE_7"                          "ROUTE_8"                         
+ [169] "ROUTE_9"                          "ROUTE_10"                        
+ [171] "ROUTE_11"                         "ROUTE_12"                        
+ [173] "ROUTE_13"                         "ROUTE_14"                        
+ [175] "MULTICONST_5"                     "MULTICONST_6"                    
+ [177] "MULTICONST_7"                     "MULTICONST_8"                    
+ [179] "MULTICONST_9"                     "MULTICONST_10"                   
+ [181] "MULTICONST_11"                    "MULTICONST_12"                   
+ [183] "MULTICONST_13"                    "MULTICONST_14"                   
+ [185] "NONSERIOUS_SERIOUS_FATAL_NSF_5"   "NONSERIOUS_SERIOUS_FATAL_NSF_6"  
+ [187] "NONSERIOUS_SERIOUS_FATAL_NSF_7"   "NONSERIOUS_SERIOUS_FATAL_NSF_8"  
+ [189] "NONSERIOUS_SERIOUS_FATAL_NSF_9"   "NONSERIOUS_SERIOUS_FATAL_NSF_10" 
+ [191] "NONSERIOUS_SERIOUS_FATAL_NSF_11"  "NONSERIOUS_SERIOUS_FATAL_NSF_12" 
+ [193] "NONSERIOUS_SERIOUS_FATAL_NSF_13"  "NONSERIOUS_SERIOUS_FATAL_NSF_14" 
+ [195] "SEQ_5.y"                          "SEQ_6.y"                         
+ [197] "SEQ_7.y"                          "SEQ_8.y"                         
+ [199] "SEQ_9.y"                          "SEQ_10.y"                        
+ [201] "SEQ_11.y"                         "SEQ_12.y"                        
+ [203] "SEQ_13.y"                         "SEQ_14.y"                        
+ [205] "SEQ_22"                           "SEQ_23"                          
+ [207] "SEQ_24"                           "SEQ_25"                          
+ [209] "SEQ_26"                           "SEQ_27"                          
+ [211] "SEQ_28"                           "SEQ_29"                          
+ [213] "SEQ_30"                           "SEQ_31"                          
+ [215] "SEQ_32"                           "SEQ_33"                          
+ [217] "SEQ_34"                           "SEQ_35"                          
+ [219] "SEQ_36"                           "SEQ_37"                          
+ [221] "SEQ_38"                           "SEQ_39"                          
+ [223] "SEQ_40"                           "SEQ_41"                          
+ [225] "SEQ_42"                           "SEQ_43"                          
+ [227] "SEQ_44"                           "SEQ_45"                          
+ [229] "SEQ_46"                           "SEQ_47"                          
+ [231] "SEQ_48"                           "SEQ_49"                          
+ [233] "SEQ_50"                           "SEQ_51"                          
+ [235] "SEQ_52"                           "SEQ_53"                          
+ [237] "SEQ_54"                           "SEQ_55"                          
+ [239] "SEQ_56"                           "SEQ_57"                          
+ [241] "SEQ_58"                           "SEQ_59"                          
+ [243] "SEQ_60"                           "SEQ_61"                          
+ [245] "SEQ_62"                           "PT_22"                           
+ [247] "PT_23"                            "PT_24"                           
+ [249] "PT_25"                            "PT_26"                           
+ [251] "PT_27"                            "PT_28"                           
+ [253] "PT_29"                            "PT_30"                           
+ [255] "PT_31"                            "PT_32"                           
+ [257] "PT_33"                            "PT_34"                           
+ [259] "PT_35"                            "PT_36"                           
+ [261] "PT_37"                            "PT_38"                           
+ [263] "PT_39"                            "PT_40"                           
+ [265] "PT_41"                            "PT_42"                           
+ [267] "PT_43"                            "PT_44"                           
+ [269] "PT_45"                            "PT_46"                           
+ [271] "PT_47"                            "PT_48"                           
+ [273] "PT_49"                            "PT_50"                           
+ [275] "PT_51"                            "PT_52"                           
+ [277] "PT_53"                            "PT_54"                           
+ [279] "PT_55"                            "PT_56"                           
+ [281] "PT_57"                            "PT_58"                           
+ [283] "PT_59"                            "PT_60"                           
+ [285] "PT_61"                            "PT_62"                           
+ [287] "HLT_22"                           "HLT_23"                          
+ [289] "HLT_24"                           "HLT_25"                          
+ [291] "HLT_26"                           "HLT_27"                          
+ [293] "HLT_28"                           "HLT_29"                          
+ [295] "HLT_30"                           "HLT_31"                          
+ [297] "HLT_32"                           "HLT_33"                          
+ [299] "HLT_34"                           "HLT_35"                          
+ [301] "HLT_36"                           "HLT_37"                          
+ [303] "HLT_38"                           "HLT_39"                          
+ [305] "HLT_40"                           "HLT_41"                          
+ [307] "HLT_42"                           "HLT_43"                          
+ [309] "HLT_44"                           "HLT_45"                          
+ [311] "HLT_46"                           "HLT_47"                          
+ [313] "HLT_48"                           "HLT_49"                          
+ [315] "HLT_50"                           "HLT_51"                          
+ [317] "HLT_52"                           "HLT_53"                          
+ [319] "HLT_54"                           "HLT_55"                          
+ [321] "HLT_56"                           "HLT_57"                          
+ [323] "HLT_58"                           "HLT_59"                          
+ [325] "HLT_60"                           "HLT_61"                          
+ [327] "HLT_62"                           "HLGT_22"                         
+ [329] "HLGT_23"                          "HLGT_24"                         
+ [331] "HLGT_25"                          "HLGT_26"                         
+ [333] "HLGT_27"                          "HLGT_28"                         
+ [335] "HLGT_29"                          "HLGT_30"                         
+ [337] "HLGT_31"                          "HLGT_32"                         
+ [339] "HLGT_33"                          "HLGT_34"                         
+ [341] "HLGT_35"                          "HLGT_36"                         
+ [343] "HLGT_37"                          "HLGT_38"                         
+ [345] "HLGT_39"                          "HLGT_40"                         
+ [347] "HLGT_41"                          "HLGT_42"                         
+ [349] "HLGT_43"                          "HLGT_44"                         
+ [351] "HLGT_45"                          "HLGT_46"                         
+ [353] "HLGT_47"                          "HLGT_48"                         
+ [355] "HLGT_49"                          "HLGT_50"                         
+ [357] "HLGT_51"                          "HLGT_52"                         
+ [359] "HLGT_53"                          "HLGT_54"                         
+ [361] "HLGT_55"                          "HLGT_56"                         
+ [363] "HLGT_57"                          "HLGT_58"                         
+ [365] "HLGT_59"                          "HLGT_60"                         
+ [367] "HLGT_61"                          "HLGT_62"                         
+ [369] "SOC_ABBREV_22"                    "SOC_ABBREV_23"                   
+ [371] "SOC_ABBREV_24"                    "SOC_ABBREV_25"                   
+ [373] "SOC_ABBREV_26"                    "SOC_ABBREV_27"                   
+ [375] "SOC_ABBREV_28"                    "SOC_ABBREV_29"                   
+ [377] "SOC_ABBREV_30"                    "SOC_ABBREV_31"                   
+ [379] "SOC_ABBREV_32"                    "SOC_ABBREV_33"                   
+ [381] "SOC_ABBREV_34"                    "SOC_ABBREV_35"                   
+ [383] "SOC_ABBREV_36"                    "SOC_ABBREV_37"                   
+ [385] "SOC_ABBREV_38"                    "SOC_ABBREV_39"                   
+ [387] "SOC_ABBREV_40"                    "SOC_ABBREV_41"                   
+ [389] "SOC_ABBREV_42"                    "SOC_ABBREV_43"                   
+ [391] "SOC_ABBREV_44"                    "SOC_ABBREV_45"                   
+ [393] "SOC_ABBREV_46"                    "SOC_ABBREV_47"                   
+ [395] "SOC_ABBREV_48"                    "SOC_ABBREV_49"                   
+ [397] "SOC_ABBREV_50"                    "SOC_ABBREV_51"                   
+ [399] "SOC_ABBREV_52"                    "SOC_ABBREV_53"                   
+ [401] "SOC_ABBREV_54"                    "SOC_ABBREV_55"                   
+ [403] "SOC_ABBREV_56"                    "SOC_ABBREV_57"                   
+ [405] "SOC_ABBREV_58"                    "SOC_ABBREV_59"                   
+ [407] "SOC_ABBREV_60"                    "SOC_ABBREV_61"                   
+ [409] "SOC_ABBREV_62"                    "FATAL_YN_22"                     
+ [411] "FATAL_YN_23"                      "FATAL_YN_24"                     
+ [413] "FATAL_YN_25"                      "FATAL_YN_26"                     
+ [415] "FATAL_YN_27"                      "FATAL_YN_28"                     
+ [417] "FATAL_YN_29"                      "FATAL_YN_30"                     
+ [419] "FATAL_YN_31"                      "FATAL_YN_32"                     
+ [421] "FATAL_YN_33"                      "FATAL_YN_34"                     
+ [423] "FATAL_YN_35"                      "FATAL_YN_36"                     
+ [425] "FATAL_YN_37"                      "FATAL_YN_38"                     
+ [427] "FATAL_YN_39"                      "FATAL_YN_40"                     
+ [429] "FATAL_YN_41"                      "FATAL_YN_42"                     
+ [431] "FATAL_YN_43"                      "FATAL_YN_44"                     
+ [433] "FATAL_YN_45"                      "FATAL_YN_46"                     
+ [435] "FATAL_YN_47"                      "FATAL_YN_48"                     
+ [437] "FATAL_YN_49"                      "FATAL_YN_50"                     
+ [439] "FATAL_YN_51"                      "FATAL_YN_52"                     
+ [441] "FATAL_YN_53"                      "FATAL_YN_54"                     
+ [443] "FATAL_YN_55"                      "FATAL_YN_56"                     
+ [445] "FATAL_YN_57"                      "FATAL_YN_58"                     
+ [447] "FATAL_YN_59"                      "FATAL_YN_60"                     
+ [449] "FATAL_YN_61"                      "FATAL_YN_62"                     
+ [451] "SEQ_63"                           "SEQ_64"                          
+ [453] "SEQ_65"                           "SEQ_66"                          
+ [455] "SEQ_67"                           "SEQ_68"                          
+ [457] "SEQ_69"                           "SEQ_70"                          
+ [459] "SEQ_71"                           "PT_63"                           
+ [461] "PT_64"                            "PT_65"                           
+ [463] "PT_66"                            "PT_67"                           
+ [465] "PT_68"                            "PT_69"                           
+ [467] "PT_70"                            "PT_71"                           
+ [469] "HLT_63"                           "HLT_64"                          
+ [471] "HLT_65"                           "HLT_66"                          
+ [473] "HLT_67"                           "HLT_68"                          
+ [475] "HLT_69"                           "HLT_70"                          
+ [477] "HLT_71"                           "HLGT_63"                         
+ [479] "HLGT_64"                          "HLGT_65"                         
+ [481] "HLGT_66"                          "HLGT_67"                         
+ [483] "HLGT_68"                          "HLGT_69"                         
+ [485] "HLGT_70"                          "HLGT_71"                         
+ [487] "SOC_ABBREV_63"                    "SOC_ABBREV_64"                   
+ [489] "SOC_ABBREV_65"                    "SOC_ABBREV_66"                   
+ [491] "SOC_ABBREV_67"                    "SOC_ABBREV_68"                   
+ [493] "SOC_ABBREV_69"                    "SOC_ABBREV_70"                   
+ [495] "SOC_ABBREV_71"                    "FATAL_YN_63"                     
+ [497] "FATAL_YN_64"                      "FATAL_YN_65"                     
+ [499] "FATAL_YN_66"                      "FATAL_YN_67"                     
+ [501] "FATAL_YN_68"                      "FATAL_YN_69"                     
+ [503] "FATAL_YN_70"                      "FATAL_YN_71"                     
+ [505] "ROUTE_15"                         "ROUTE_16"                        
+ [507] "ROUTE_17"                         "ROUTE_18"                        
+ [509] "ROUTE_19"                         "ROUTE_20"                        
+ [511] "ROUTE_21"                         "MULTICONST_15"                   
+ [513] "MULTICONST_16"                    "MULTICONST_17"                   
+ [515] "MULTICONST_18"                    "MULTICONST_19"                   
+ [517] "MULTICONST_20"                    "MULTICONST_21"                   
+ [519] "NONSERIOUS_SERIOUS_FATAL_NSF_15"  "NONSERIOUS_SERIOUS_FATAL_NSF_16" 
+ [521] "NONSERIOUS_SERIOUS_FATAL_NSF_17"  "NONSERIOUS_SERIOUS_FATAL_NSF_18" 
+ [523] "NONSERIOUS_SERIOUS_FATAL_NSF_19"  "NONSERIOUS_SERIOUS_FATAL_NSF_20" 
+ [525] "NONSERIOUS_SERIOUS_FATAL_NSF_21"  "SEQ_15.x"                        
+ [527] "SEQ_16.x"                         "SEQ_17.x"                        
+ [529] "SEQ_18.x"                         "SEQ_19.x"                        
+ [531] "SEQ_20.x"                         "SEQ_21.x"                        
+ [533] "SEQ_22.x"                         "SEQ_23.x"                        
+ [535] "SEQ_24.x"                         "SEQ_25.x"                        
+ [537] "SEQ_26.x"                         "SEQ_27.x"                        
+ [539] "SEQ_28.x"                         "SEQ_29.x"                        
+ [541] "SEQ_30.x"                         "SEQ_31.x"                        
+ [543] "SEQ_32.x"                         "SEQ_33.x"                        
+ [545] "SEQ_34.x"                         "SEQ_35.x"                        
+ [547] "SEQ_36.x"                         "SEQ_37.x"                        
+ [549] "SEQ_38.x"                         "SEQ_39.x"                        
+ [551] "SEQ_40.x"                         "SEQ_41.x"                        
+ [553] "SEQ_42.x"                         "SEQ_43.x"                        
+ [555] "ROUTE_22"                         "ROUTE_23"                        
+ [557] "ROUTE_24"                         "ROUTE_25"                        
+ [559] "ROUTE_26"                         "ROUTE_27"                        
+ [561] "ROUTE_28"                         "ROUTE_29"                        
+ [563] "ROUTE_30"                         "ROUTE_31"                        
+ [565] "ROUTE_32"                         "ROUTE_33"                        
+ [567] "ROUTE_34"                         "ROUTE_35"                        
+ [569] "ROUTE_36"                         "ROUTE_37"                        
+ [571] "ROUTE_38"                         "ROUTE_39"                        
+ [573] "ROUTE_40"                         "ROUTE_41"                        
+ [575] "ROUTE_42"                         "ROUTE_43"                        
+ [577] "ROUTE_44"                         "ROUTE_45"                        
+ [579] "ROUTE_46"                         "ROUTE_47"                        
+ [581] "ROUTE_48"                         "ROUTE_49"                        
+ [583] "ROUTE_50"                         "ROUTE_51"                        
+ [585] "ROUTE_52"                         "ROUTE_53"                        
+ [587] "ROUTE_54"                         "MULTICONST_22"                   
+ [589] "MULTICONST_23"                    "MULTICONST_24"                   
+ [591] "MULTICONST_25"                    "MULTICONST_26"                   
+ [593] "MULTICONST_27"                    "MULTICONST_28"                   
+ [595] "MULTICONST_29"                    "MULTICONST_30"                   
+ [597] "MULTICONST_31"                    "MULTICONST_32"                   
+ [599] "MULTICONST_33"                    "MULTICONST_34"                   
+ [601] "MULTICONST_35"                    "MULTICONST_36"                   
+ [603] "MULTICONST_37"                    "MULTICONST_38"                   
+ [605] "MULTICONST_39"                    "MULTICONST_40"                   
+ [607] "MULTICONST_41"                    "MULTICONST_42"                   
+ [609] "MULTICONST_43"                    "MULTICONST_44"                   
+ [611] "MULTICONST_45"                    "MULTICONST_46"                   
+ [613] "MULTICONST_47"                    "MULTICONST_48"                   
+ [615] "MULTICONST_49"                    "MULTICONST_50"                   
+ [617] "MULTICONST_51"                    "MULTICONST_52"                   
+ [619] "MULTICONST_53"                    "MULTICONST_54"                   
+ [621] "NONSERIOUS_SERIOUS_FATAL_NSF_22"  "NONSERIOUS_SERIOUS_FATAL_NSF_23" 
+ [623] "NONSERIOUS_SERIOUS_FATAL_NSF_24"  "NONSERIOUS_SERIOUS_FATAL_NSF_25" 
+ [625] "NONSERIOUS_SERIOUS_FATAL_NSF_26"  "NONSERIOUS_SERIOUS_FATAL_NSF_27" 
+ [627] "NONSERIOUS_SERIOUS_FATAL_NSF_28"  "NONSERIOUS_SERIOUS_FATAL_NSF_29" 
+ [629] "NONSERIOUS_SERIOUS_FATAL_NSF_30"  "NONSERIOUS_SERIOUS_FATAL_NSF_31" 
+ [631] "NONSERIOUS_SERIOUS_FATAL_NSF_32"  "NONSERIOUS_SERIOUS_FATAL_NSF_33" 
+ [633] "NONSERIOUS_SERIOUS_FATAL_NSF_34"  "NONSERIOUS_SERIOUS_FATAL_NSF_35" 
+ [635] "NONSERIOUS_SERIOUS_FATAL_NSF_36"  "NONSERIOUS_SERIOUS_FATAL_NSF_37" 
+ [637] "NONSERIOUS_SERIOUS_FATAL_NSF_38"  "NONSERIOUS_SERIOUS_FATAL_NSF_39" 
+ [639] "NONSERIOUS_SERIOUS_FATAL_NSF_40"  "NONSERIOUS_SERIOUS_FATAL_NSF_41" 
+ [641] "NONSERIOUS_SERIOUS_FATAL_NSF_42"  "NONSERIOUS_SERIOUS_FATAL_NSF_43" 
+ [643] "NONSERIOUS_SERIOUS_FATAL_NSF_44"  "NONSERIOUS_SERIOUS_FATAL_NSF_45" 
+ [645] "NONSERIOUS_SERIOUS_FATAL_NSF_46"  "NONSERIOUS_SERIOUS_FATAL_NSF_47" 
+ [647] "NONSERIOUS_SERIOUS_FATAL_NSF_48"  "NONSERIOUS_SERIOUS_FATAL_NSF_49" 
+ [649] "NONSERIOUS_SERIOUS_FATAL_NSF_50"  "NONSERIOUS_SERIOUS_FATAL_NSF_51" 
+ [651] "NONSERIOUS_SERIOUS_FATAL_NSF_52"  "NONSERIOUS_SERIOUS_FATAL_NSF_53" 
+ [653] "NONSERIOUS_SERIOUS_FATAL_NSF_54"  "SEQ_15.y"                        
+ [655] "SEQ_16.y"                         "SEQ_17.y"                        
+ [657] "SEQ_18.y"                         "SEQ_19.y"                        
+ [659] "SEQ_20.y"                         "SEQ_21.y"                        
+ [661] "SEQ_22.y"                         "SEQ_23.y"                        
+ [663] "SEQ_24.y"                         "SEQ_25.y"                        
+ [665] "SEQ_26.y"                         "SEQ_27.y"                        
+ [667] "SEQ_28.y"                         "SEQ_29.y"                        
+ [669] "SEQ_30.y"                         "SEQ_31.y"                        
+ [671] "SEQ_32.y"                         "SEQ_33.y"                        
+ [673] "SEQ_34.y"                         "SEQ_35.y"                        
+ [675] "SEQ_36.y"                         "SEQ_37.y"                        
+ [677] "SEQ_38.y"                         "SEQ_39.y"                        
+ [679] "SEQ_40.y"                         "SEQ_41.y"                        
+ [681] "SEQ_42.y"                         "SEQ_43.y"                        
+ [683] "SEQ_72"                           "SEQ_73"                          
+ [685] "SEQ_74"                           "SEQ_75"                          
+ [687] "SEQ_76"                           "SEQ_77"                          
+ [689] "SEQ_78"                           "SEQ_79"                          
+ [691] "SEQ_80"                           "SEQ_81"                          
+ [693] "SEQ_82"                           "PT_72"                           
+ [695] "PT_73"                            "PT_74"                           
+ [697] "PT_75"                            "PT_76"                           
+ [699] "PT_77"                            "PT_78"                           
+ [701] "PT_79"                            "PT_80"                           
+ [703] "PT_81"                            "PT_82"                           
+ [705] "HLT_72"                           "HLT_73"                          
+ [707] "HLT_74"                           "HLT_75"                          
+ [709] "HLT_76"                           "HLT_77"                          
+ [711] "HLT_78"                           "HLT_79"                          
+ [713] "HLT_80"                           "HLT_81"                          
+ [715] "HLT_82"                           "HLGT_72"                         
+ [717] "HLGT_73"                          "HLGT_74"                         
+ [719] "HLGT_75"                          "HLGT_76"                         
+ [721] "HLGT_77"                          "HLGT_78"                         
+ [723] "HLGT_79"                          "HLGT_80"                         
+ [725] "HLGT_81"                          "HLGT_82"                         
+ [727] "SOC_ABBREV_72"                    "SOC_ABBREV_73"                   
+ [729] "SOC_ABBREV_74"                    "SOC_ABBREV_75"                   
+ [731] "SOC_ABBREV_76"                    "SOC_ABBREV_77"                   
+ [733] "SOC_ABBREV_78"                    "SOC_ABBREV_79"                   
+ [735] "SOC_ABBREV_80"                    "SOC_ABBREV_81"                   
+ [737] "SOC_ABBREV_82"                    "FATAL_YN_72"                     
+ [739] "FATAL_YN_73"                      "FATAL_YN_74"                     
+ [741] "FATAL_YN_75"                      "FATAL_YN_76"                     
+ [743] "FATAL_YN_77"                      "FATAL_YN_78"                     
+ [745] "FATAL_YN_79"                      "FATAL_YN_80"                     
+ [747] "FATAL_YN_81"                      "FATAL_YN_82"                     
+ [749] "ROUTE_55"                         "ROUTE_56"                        
+ [751] "ROUTE_57"                         "ROUTE_58"                        
+ [753] "ROUTE_59"                         "ROUTE_60"                        
+ [755] "ROUTE_61"                         "ROUTE_62"                        
+ [757] "ROUTE_63"                         "ROUTE_64"                        
+ [759] "ROUTE_65"                         "ROUTE_66"                        
+ [761] "ROUTE_67"                         "ROUTE_68"                        
+ [763] "ROUTE_69"                         "ROUTE_70"                        
+ [765] "MULTICONST_55"                    "MULTICONST_56"                   
+ [767] "MULTICONST_57"                    "MULTICONST_58"                   
+ [769] "MULTICONST_59"                    "MULTICONST_60"                   
+ [771] "MULTICONST_61"                    "MULTICONST_62"                   
+ [773] "MULTICONST_63"                    "MULTICONST_64"                   
+ [775] "MULTICONST_65"                    "MULTICONST_66"                   
+ [777] "MULTICONST_67"                    "MULTICONST_68"                   
+ [779] "MULTICONST_69"                    "MULTICONST_70"                   
+ [781] "NONSERIOUS_SERIOUS_FATAL_NSF_55"  "NONSERIOUS_SERIOUS_FATAL_NSF_56" 
+ [783] "NONSERIOUS_SERIOUS_FATAL_NSF_57"  "NONSERIOUS_SERIOUS_FATAL_NSF_58" 
+ [785] "NONSERIOUS_SERIOUS_FATAL_NSF_59"  "NONSERIOUS_SERIOUS_FATAL_NSF_60" 
+ [787] "NONSERIOUS_SERIOUS_FATAL_NSF_61"  "NONSERIOUS_SERIOUS_FATAL_NSF_62" 
+ [789] "NONSERIOUS_SERIOUS_FATAL_NSF_63"  "NONSERIOUS_SERIOUS_FATAL_NSF_64" 
+ [791] "NONSERIOUS_SERIOUS_FATAL_NSF_65"  "NONSERIOUS_SERIOUS_FATAL_NSF_66" 
+ [793] "NONSERIOUS_SERIOUS_FATAL_NSF_67"  "NONSERIOUS_SERIOUS_FATAL_NSF_68" 
+ [795] "NONSERIOUS_SERIOUS_FATAL_NSF_69"  "NONSERIOUS_SERIOUS_FATAL_NSF_70" 
+ [797] "SEQ_83"                           "SEQ_84"                          
+ [799] "SEQ_85"                           "SEQ_86"                          
+ [801] "SEQ_87"                           "SEQ_88"                          
+ [803] "SEQ_89"                           "SEQ_90"                          
+ [805] "SEQ_91"                           "SEQ_92"                          
+ [807] "SEQ_93"                           "SEQ_94"                          
+ [809] "SEQ_95"                           "SEQ_96"                          
+ [811] "SEQ_97"                           "SEQ_98"                          
+ [813] "SEQ_99"                           "SEQ_100"                         
+ [815] "SEQ_101"                          "SEQ_102"                         
+ [817] "SEQ_103"                          "SEQ_104"                         
+ [819] "PT_83"                            "PT_84"                           
+ [821] "PT_85"                            "PT_86"                           
+ [823] "PT_87"                            "PT_88"                           
+ [825] "PT_89"                            "PT_90"                           
+ [827] "PT_91"                            "PT_92"                           
+ [829] "PT_93"                            "PT_94"                           
+ [831] "PT_95"                            "PT_96"                           
+ [833] "PT_97"                            "PT_98"                           
+ [835] "PT_99"                            "PT_100"                          
+ [837] "PT_101"                           "PT_102"                          
+ [839] "PT_103"                           "PT_104"                          
+ [841] "HLT_83"                           "HLT_84"                          
+ [843] "HLT_85"                           "HLT_86"                          
+ [845] "HLT_87"                           "HLT_88"                          
+ [847] "HLT_89"                           "HLT_90"                          
+ [849] "HLT_91"                           "HLT_92"                          
+ [851] "HLT_93"                           "HLT_94"                          
+ [853] "HLT_95"                           "HLT_96"                          
+ [855] "HLT_97"                           "HLT_98"                          
+ [857] "HLT_99"                           "HLT_100"                         
+ [859] "HLT_101"                          "HLT_102"                         
+ [861] "HLT_103"                          "HLT_104"                         
+ [863] "HLGT_83"                          "HLGT_84"                         
+ [865] "HLGT_85"                          "HLGT_86"                         
+ [867] "HLGT_87"                          "HLGT_88"                         
+ [869] "HLGT_89"                          "HLGT_90"                         
+ [871] "HLGT_91"                          "HLGT_92"                         
+ [873] "HLGT_93"                          "HLGT_94"                         
+ [875] "HLGT_95"                          "HLGT_96"                         
+ [877] "HLGT_97"                          "HLGT_98"                         
+ [879] "HLGT_99"                          "HLGT_100"                        
+ [881] "HLGT_101"                         "HLGT_102"                        
+ [883] "HLGT_103"                         "HLGT_104"                        
+ [885] "SOC_ABBREV_83"                    "SOC_ABBREV_84"                   
+ [887] "SOC_ABBREV_85"                    "SOC_ABBREV_86"                   
+ [889] "SOC_ABBREV_87"                    "SOC_ABBREV_88"                   
+ [891] "SOC_ABBREV_89"                    "SOC_ABBREV_90"                   
+ [893] "SOC_ABBREV_91"                    "SOC_ABBREV_92"                   
+ [895] "SOC_ABBREV_93"                    "SOC_ABBREV_94"                   
+ [897] "SOC_ABBREV_95"                    "SOC_ABBREV_96"                   
+ [899] "SOC_ABBREV_97"                    "SOC_ABBREV_98"                   
+ [901] "SOC_ABBREV_99"                    "SOC_ABBREV_100"                  
+ [903] "SOC_ABBREV_101"                   "SOC_ABBREV_102"                  
+ [905] "SOC_ABBREV_103"                   "SOC_ABBREV_104"                  
+ [907] "FATAL_YN_83"                      "FATAL_YN_84"                     
+ [909] "FATAL_YN_85"                      "FATAL_YN_86"                     
+ [911] "FATAL_YN_87"                      "FATAL_YN_88"                     
+ [913] "FATAL_YN_89"                      "FATAL_YN_90"                     
+ [915] "FATAL_YN_91"                      "FATAL_YN_92"                     
+ [917] "FATAL_YN_93"                      "FATAL_YN_94"                     
+ [919] "FATAL_YN_95"                      "FATAL_YN_96"                     
+ [921] "FATAL_YN_97"                      "FATAL_YN_98"                     
+ [923] "FATAL_YN_99"                      "FATAL_YN_100"                    
+ [925] "FATAL_YN_101"                     "FATAL_YN_102"                    
+ [927] "FATAL_YN_103"                     "FATAL_YN_104"                    
+ [929] "SEQ_44.x"                         "SEQ_45.x"                        
+ [931] "SEQ_46.x"                         "SEQ_47.x"                        
+ [933] "SEQ_48.x"                         "SEQ_49.x"                        
+ [935] "SEQ_50.x"                         "SEQ_51.x"                        
+ [937] "SEQ_52.x"                         "SEQ_53.x"                        
+ [939] "SEQ_54.x"                         "SEQ_55.x"                        
+ [941] "SEQ_56.x"                         "SEQ_57.x"                        
+ [943] "SEQ_105"                          "SEQ_106"                         
+ [945] "SEQ_107"                          "SEQ_108"                         
+ [947] "SEQ_109"                          "SEQ_110"                         
+ [949] "SEQ_111"                          "SEQ_112"                         
+ [951] "SEQ_113"                          "SEQ_114"                         
+ [953] "SEQ_115"                          "SEQ_116"                         
+ [955] "SEQ_117"                          "SEQ_118"                         
+ [957] "SEQ_119"                          "SEQ_120"                         
+ [959] "SEQ_121"                          "SEQ_122"                         
+ [961] "SEQ_123"                          "SEQ_124"                         
+ [963] "SEQ_125"                          "SEQ_126"                         
+ [965] "SEQ_127"                          "SEQ_128"                         
+ [967] "SEQ_129"                          "SEQ_130"                         
+ [969] "SEQ_131"                          "SEQ_132"                         
+ [971] "SEQ_133"                          "SEQ_134"                         
+ [973] "SEQ_135"                          "ROUTE_71"                        
+ [975] "ROUTE_72"                         "ROUTE_73"                        
+ [977] "ROUTE_74"                         "ROUTE_75"                        
+ [979] "ROUTE_76"                         "ROUTE_77"                        
+ [981] "ROUTE_78"                         "ROUTE_79"                        
+ [983] "ROUTE_80"                         "ROUTE_81"                        
+ [985] "ROUTE_82"                         "ROUTE_83"                        
+ [987] "ROUTE_84"                         "ROUTE_85"                        
+ [989] "ROUTE_86"                         "ROUTE_87"                        
+ [991] "ROUTE_88"                         "ROUTE_89"                        
+ [993] "ROUTE_90"                         "ROUTE_91"                        
+ [995] "ROUTE_92"                         "ROUTE_93"                        
+ [997] "ROUTE_94"                         "ROUTE_95"                        
+ [999] "ROUTE_96"                         "ROUTE_97"                        
+ [ reached getOption("max.print") -- omitted 1628 entries ]
+> install.packages("dplyr")
+
+The downloaded binary packages are in
+	/var/folders/md/j903sxgj1453scv9p_fqqvbr0000gn/T//RtmpfxOpph/downloaded_packages
+> library(dplyr)
+> ADR_master <- ADR_master %>% select(-PREPARE_drugs, -CYP2C19_PREPARE, 
++ -CYP2D6_PREPARE, -SLCO1B1_PREPARE, -OTHER_PREPARE, -DPYD_PREPARE, 
++ -UGT1A1_PREPARE, -VKORC1_PREPARE, -HLA_A_PREPARE, -HLA_B_PREPARE, 
++ -TPMT_PREPARE, -CYP3A5_PREPARE, -CYP2B6_PREPARE, -CYP2C9_PREPARE)
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs_3$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs_3$CYP2C9_PREPARE)
+> count_total_PREPARE_ADRs <- sum(ADR_master$PREPARE_drugs == 1)
+> print(count_total_PREPARE_ADRs)
+[1] 115789
+> count_ones <- colSums(ADR_master[, c("CYP2C19_PREPARE", "CYP2D6_PREPARE", 
++ "SLCO1B1_PREPARE")] == 1)
+> print(count_ones)
+CYP2C19_PREPARE  CYP2D6_PREPARE SLCO1B1_PREPARE 
+          23443           46419           17537 
+> count_total_CYP2D6_ADRs <- sum(ADR_master$CYP2D6_PREPARE == 1)
+> print(count_total_CYP2D6_ADRs)
+[1] 46419
+> count_ones <- colSums(ADR_master[, c("CYP2C9_PREPARE", "CYP2D6_PREPARE", 
++ "SLCO1B1_PREPARE")] == 1)
+> print(count_ones)
+ CYP2C9_PREPARE  CYP2D6_PREPARE SLCO1B1_PREPARE 
+           7215           46419           17537 
+> count_ones <- colSums(ADR_master[, c("CYP2C19_PREPARE", "CYP2D6_PREPARE", 
++ "SLCO1B1_PREPARE")] == 1)
+> print(count_ones)
+CYP2C19_PREPARE  CYP2D6_PREPARE SLCO1B1_PREPARE 
+          23443           46419           17537 
+> ADR_master <- ADR_master %>% select(-PREPARE_drugs, -CYP2C19_PREPARE, 
++ -CYP2D6_PREPARE, -SLCO1B1_PREPARE, -OTHER_PREPARE, -DPYD_PREPARE, 
++ -UGT1A1_PREPARE, -VKORC1_PREPARE, -HLA_A_PREPARE, -HLA_B_PREPARE, 
++ -TPMT_PREPARE, -CYP3A5_PREPARE, -CYP2B6_PREPARE, -CYP2C9_PREPARE)
+> library(readr)
+> PREPARE_Drugs <- read_csv("PREPARE_Drugs.csv")
+> View(PREPARE_Drugs)
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_Drugs$CYP2C9_PREPARE)
+> count_total_PREPARE_ADRs <- sum(ADR_master$PREPARE_drugs == 1)
+> print(count_total_PREPARE_ADRs)
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 4.71PB/s                                                                                                           [1] 115789
+> count_ones <- colSums(ADR_master[, c("CYP2C19_PREPARE", "CYP2D6_PREPARE", 
++ "SLCO1B1_PREPARE")] == 1)
+> print(count_ones)
+CYP2C19_PREPARE  CYP2D6_PREPARE SLCO1B1_PREPARE 
+          23443           46419           17537 
+> count_total_CYP2D6_ADRs <- sum(ADR_master$CYP2D6_PREPARE == 1)
+> count_TPMT <- sum(ADR_master$TPMT_PREPARE == 1)
+> print(count_TPMT)
+[1] 3286
+> count_total_CYP2C9_ADRs <- sum(ADR_master$CYP2C9_PREPARE == 1)
+> print(count_total_CYP2C9_ADRs)
+[1] 7215
+> earliest_year <- min(ADR_master$RECVD_YEAR_1)
+> print(earliest_year)
+[1] "1963"
+> library(readr)
+> OLD_PREPARE_Drugs <- read_csv("OLD_PREPARE_Drugs.csv")
+> View(OLD_PREPARE_Drugs)
+> ADR_master$OLD_CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ OLD_PREPARE_Drugs$CYP2C19_PREPARE_2)
+> ADR_master$OLD_CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ OLD_PREPARE_Drugs$CYP2D6_PREPARE_2)
+> ADR_master$OLD_SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ OLD_PREPARE_Drugs$SLCO1B1_PREPARE_2)
+> count_ones_old <- colSums(ADR_master[, c("OLD_CYP2C19_PREPARE", 
++ "OLD_CYP2D6_PREPARE", "OLD_SLCO1B1_PREPARE")] == 1)
+> print(count_ones_old)
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.92PB/s                                                                                                           OLD_CYP2C19_PREPARE  OLD_CYP2D6_PREPARE OLD_SLCO1B1_PREPARE 
+              23443              105186                9127 
+> ADR_master <- ADR_master %>% select(-OLD_CYP2C19_PREPARE, -OLD_CYP2D6_PREPARE, 
++ -OLD_SLCO1B1_PREPARE)
+> library(readr)
+> OLD_PREPARE_Drugs <- read_csv("OLD_PREPARE_Drugs.csv")
+> View(OLD_PREPARE_Drugs)
+> ADR_master$OLD_CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ OLD_PREPARE_Drugs$CYP2C19_PREPARE_2)
+> ADR_master$OLD_CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ OLD_PREPARE_Drugs$CYP2D6_PREPARE_2)
+> ADR_master$OLD_SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ OLD_PREPARE_Drugs$SLCO1B1_PREPARE_2)
+> count_ones_old <- colSums(ADR_master[, c("OLD_CYP2C19_PREPARE", 
++ "OLD_CYP2D6_PREPARE", "OLD_SLCO1B1_PREPARE")] == 1)
+> print(count_ones_old)
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.78PB/s                                                                                                           OLD_CYP2C19_PREPARE  OLD_CYP2D6_PREPARE OLD_SLCO1B1_PREPARE 
+              23443               47428                9127 
+> print(count_ones)
+CYP2C19_PREPARE  CYP2D6_PREPARE SLCO1B1_PREPARE 
+          23443           46419           17537 
+> ADR_master <- ADR_master %>% select(-OLD_CYP2C19_PREPARE, -OLD_CYP2D6_PREPARE, 
++ -OLD_SLCO1B1_PREPARE)
+> View(ADR_master)
+> library(ggplot2)
+> ADR_master$RECVD_YEAR_1 <- as.numeric(as.character(ADR_master$RECVD_YEAR_1))
+> ADR_master$Decade <- (ADR_master$RECVD_YEAR_1%/%10) * 10
+> calculate_percentage_per_decade <- function(drug_category_column) {
++ total_reports_per_decade <- table((ADR_master$RECVD_YEAR_1%/%10) * 
++ 
++ 10)
++ drug_reports_per_decade <- table((ADR_master$RECVD_YEAR_1%/%10) * 
++ 
++ 10, drug_category_column)
++ percentage_per_decade <- (drug_reports_per_decade[, "1"]/total_reports_per_decade) * 
++ 
++ 100
++ data.frame(Decade = as.numeric(names(percentage_per_decade)), 
++ 
++ Percentage = as.numeric(percentage_per_decade))
++ }
+> df_prepare_overall <- calculate_percentage_per_decade(ADR_master$PREPARE_drugs)
+> df_cyp2c19 <- calculate_percentage_per_decade(ADR_master$CYP2C19_PREPARE)
+> df_cyp2d6 <- calculate_percentage_per_decade(ADR_master$CYP2D6_PREPARE)
+> df_slco1b1 <- calculate_percentage_per_decade(ADR_master$SLCO1B1_PREPARE)
+> install.packages("dplyr")
+Error in install.packages : Updating loaded packages
+> install.packages("dplyr")
+
+The downloaded binary packages are in
+	/var/folders/md/j903sxgj1453scv9p_fqqvbr0000gn/T//RtmpfxOpph/downloaded_packages
+> install.packages("tidyr")
+
+The downloaded binary packages are in
+	/var/folders/md/j903sxgj1453scv9p_fqqvbr0000gn/T//RtmpfxOpph/downloaded_packages
+> install.packages("ggplot2")
+Error in install.packages : Updating loaded packages
+> install.packages("ggplot2")
+
+The downloaded binary packages are in
+	/var/folders/md/j903sxgj1453scv9p_fqqvbr0000gn/T//RtmpfxOpph/downloaded_packages
+> library(ggplot2)
+> library(dplyr)
+> library(tidyr)
+> total_reports_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% count(Decade)
+> reports_per_gene_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade) %>% summarise(CYP2C19 = sum(CYP2C19_PREPARE), 
++ SLCO1B1 = sum(SLCO1B1_PREPARE), CYP2D6 = sum(CYP2D6_PREPARE), 
++ OTHER = sum(OTHER_PREPARE))
+> percentage_per_gene_per_decade <- reports_per_gene_per_decade %>% 
++ left_join(total_reports_per_decade, by = "Decade") %>% mutate(CYP2C19 = (CYP2C19/n) * 
++ 100, SLCO1B1 = (SLCO1B1/n) * 100, CYP2D6 = (CYP2D6/n) * 100, 
++ OTHER = (OTHER/n) * 100) %>% select(-n) %>% pivot_longer(-Decade, 
++ names_to = "Gene", values_to = "Percentage")
+> my_colors <- c("#ffffb3", "#80b1d3", "#ccebc5")
+> plot_stacked_bar <- ggplot(percentage_per_gene_per_decade, aes(x = factor(Decade), 
++ y = Percentage, fill = Gene)) + geom_bar(stat = "identity") + 
++ labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE drugs and their associated genes per Decade") + 
++ theme_minimal() + scale_fill_manual(values = my_colors)
+> my_colors <- c("#ffffb3", "#80b1d3", "#ccebc5", "#ffffb3")
+> plot_stacked_bar <- ggplot(percentage_per_gene_per_decade, aes(x = factor(Decade), 
++ y = Percentage, fill = Gene)) + geom_bar(stat = "identity") + 
++ labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE drugs and their associated genes per Decade") + 
++ theme_minimal() + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar)
+> my_colors <- c("#ffffb3", "#80b1d3", "#ccebc5", "#b3de69")
+> plot_stacked_bar <- ggplot(percentage_per_gene_per_decade, aes(x = factor(Decade), 
++ y = Percentage, fill = Gene)) + geom_bar(stat = "identity") + 
++ labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE drugs and their associated genes per Decade") + 
++ theme_minimal() + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar)
+> total_reports_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% count(Decade)
+> reports_per_gene_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade) %>% summarise(CYP2C19 = sum(CYP2C19_PREPARE), 
++ SLCO1B1 = sum(SLCO1B1_PREPARE), CYP2D6 = sum(CYP2D6_PREPARE), 
++ DPYD = sum(DPYD_PREPARE), UGT1A1 = sum(UGT1A1_PREPARE), VKORC1 = sum(VKORC1_PREPARE), 
++ HLA_A = sum(HLA_A_PREPARE), HLA_B = sum(HLA_B_PREPARE), TPMT = sum(TPMT_PREPARE), 
++ CYP3A5 = sum(CYP3A5_PREPARE), CYP2B6 = sum(CYP2B6_PREPARE), 
++ CYP2C9 = sum(CYP2C9_PREPARE))
+> percentage_per_gene_per_decade <- reports_per_gene_per_decade %>% 
++ left_join(total_reports_per_decade, by = "Decade") %>% mutate(CYP2C19 = (CYP2C19/n) * 
++ 100, SLCO1B1 = (SLCO1B1/n) * 100, CYP2D6 = (CYP2D6/n) * 100, 
++ DPYD = (DPYD/n) * 100, UGT1A1 = (UGT1A1/n) * 100, VKORC1 = (VKORC1/n) * 
++ 
++ 100, HLA_A = (HLA_A/n) * 100, HLA_B = (HLA_B/n) * 100, 
++ TPMT = (TPMT/n) * 100, CYP3A5 = (CYP3A5/n) * 100, CYP2B6 = (CYP2B6/n) * 
++ 
++ 100, CYP2C9 = (CYP2C9/n) * 100) %>% select(-n) %>% pivot_longer(-Decade, 
++ names_to = "Gene", values_to = "Percentage")
+> my_colors <- c("#8dd3c7", "#ffffb3", "#bebada", "#80b1d3", "#fdb462", 
++ "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f", 
++ "#a6cee3")
+> plot_stacked_bar <- ggplot(percentage_per_gene_per_decade, aes(x = factor(Decade), 
++ y = Percentage, fill = Gene)) + geom_bar(stat = "identity") + 
++ labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE drugs and their associated genes per Decade") + 
++ theme_minimal() + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar)
+> min(ADR_master$AGE_10_1)
+[1] NA
+> min(ADR_master$AGE_10_1, na.rm = TRUE)
+[1] "0"
+> max(ADR_master$AGE_10_1, na.rm = TRUE)
+[1] "90"
+> percentage_per_decade <- ADR_master %>% group_by(Decade) %>% 
++ summarise(Total = n(), PREPARE_drugs = sum(PREPARE_drugs), 
++ 
++ CYP2D6_PREPARE = sum(CYP2D6_PREPARE), CYP2C19_PREPARE = sum(CYP2C19_PREPARE), 
++ 
++ SLCO1B1_PREPARE = sum(SLCO1B1_PREPARE)) %>% mutate(Percentage_CYP2D6 = (CYP2D6_PREPARE/Total) * 
++ 100, Percentage_CYP2C19 = (CYP2C19_PREPARE/Total) * 100, 
++ Percentage_SLCO1B1 = (SLCO1B1_PREPARE/Total) * 100)
+> percentage_per_decade <- ADR_master %>% group_by(Decade) %>% 
++ summarise(Total = n(), CYP2D6_PREPARE = sum(CYP2D6_PREPARE), 
++ 
++ CYP2C19_PREPARE = sum(CYP2C19_PREPARE), SLCO1B1_PREPARE = sum(SLCO1B1_PREPARE)) %>% 
++ mutate(Percentage_CYP2D6 = (CYP2D6_PREPARE/Total) * 100, 
++ 
++ Percentage_CYP2C19 = (CYP2C19_PREPARE/Total) * 100, Percentage_SLCO1B1 = (SLCO1B1_PREPARE/Total) * 
++ 
++ 
++ 100)
+> library(ggplot2)
+> plot_decade_percentage <- ggplot(percentage_per_decade, aes(x = as.factor(Decade))) + 
++ geom_bar(aes(y = Percentage_CYP2D6, fill = "CYP2D6_PREPARE"), 
++ 
++ stat = "identity", position = "stack") + geom_bar(aes(y = Percentage_CYP2C19, 
++ fill = "CYP2C19_PREPARE"), stat = "identity", position = "stack") + 
++ geom_bar(aes(y = Percentage_SLCO1B1, fill = "SLCO1B1_PREPARE"), 
++ 
++ stat = "identity", position = "stack") + labs(x = "Decade", 
++ y = "Percentage of ADR Reports", fill = "PREPARE Drug") + 
++ scale_fill_manual(values = c(CYP2D6_PREPARE = "blue", CYP2C19_PREPARE = "green", 
++ 
++ SLCO1B1_PREPARE = "red")) + theme_minimal() + theme(legend.title = element_blank())
+> print(plot_decade_percentage)
+> percentage_per_age_range <- ADR_master %>% group_by(AGE_10_1) %>% 
++ summarise(Total = n(), PREPARE = sum(PREPARE_drugs), Non_PREPARE = Total - 
++ 
++ sum(PREPARE_drugs), Missing = sum(is.na(PREPARE_drugs))) %>% 
++ mutate(Percentage_PREPARE = (PREPARE/Total) * 100, Percentage_Non_PREPARE = (Non_PREPARE/Total) * 
++ 
++ 100, Percentage_Missing = (Missing/Total) * 100)
+> plot_age_percentage <- ggplot(percentage_per_age_range, aes(x = AGE_RANGE)) + 
++ geom_bar(aes(y = Percentage_PREPARE, fill = "PREPARE"), stat = "identity") + 
++ geom_bar(aes(y = Percentage_Non_PREPARE, fill = "Non-PREPARE"), 
++ 
++ stat = "identity") + geom_bar(aes(y = Percentage_Missing, 
++ fill = "Missing"), stat = "identity") + labs(x = "Age Range", 
++ y = "Percentage of ADR Reports", fill = "Drug Status") + 
++ theme_minimal() + theme(legend.title = element_blank())
+> plot_age_percentage <- ggplot(percentage_per_age_range, aes(x = AGE_10_1)) + 
++ geom_bar(aes(y = Percentage_PREPARE, fill = "PREPARE"), stat = "identity") + 
++ geom_bar(aes(y = Percentage_Non_PREPARE, fill = "Non-PREPARE"), 
++ 
++ stat = "identity") + geom_bar(aes(y = Percentage_Missing, 
++ fill = "Missing"), stat = "identity") + labs(x = "Age Range", 
++ y = "Percentage of ADR Reports", fill = "Drug Status") + 
++ theme_minimal() + theme(legend.title = element_blank())
+> print(plot_age_percentage)
+> 880 %in% ADR_master$Decade
+[1] FALSE
+> 880 %in% ADR_master$AGE_10_1
+[1] TRUE
+> which(ADR_master$AGE_10_1 == 880)
+[1] 554347
+> "unknown" %in% ADR_master$AGE_10_1
+[1] FALSE
+> "unknown" %in% ADR_master$SEX_1
+[1] FALSE
+> "Unknown" %in% ADR_master$AGE_10_1
+[1] FALSE
+> "Unknown" %in% ADR_master$SEX_1
+[1] TRUE
+> percentage_per_decade_CYP2D6 <- ADR_master %>% group_by(Decade) %>% 
++ summarise(Total = n(), PREPARE_drugs = sum(PREPARE_drugs)) %>% 
++ mutate(Percentage_PREPARE_drugs = (PREPARE_drugs/Total) * 
++ 
++ 100)
+> plot_decade_percentage <- ggplot(percentage_per_decade, aes(x = as.factor(Decade))) + 
++ geom_bar(aes(y = Percentage_CYP2D6, fill = "CYP2D6_PREPARE"), 
++ 
++ stat = "identity", position = "stack") + labs(x = "Decade", 
++ y = "Percentage of ADR Reports", fill = "PREPARE Drug") + 
++ scale_fill_manual(values = c(`PREPARE Drugs` = "blue")) + 
++ theme_minimal() + theme(legend.title = element_blank())
+> print(plot_decade_percentage)
+> plot_decade_percentage <- ggplot(percentage_per_decade, aes(x = as.factor(Decade))) + 
++ geom_bar(aes(y = Percentage_PREPARE_drugs, fill = "CYP2D6_PREPARE"), 
++ 
++ stat = "identity", position = "stack") + labs(x = "Decade", 
++ y = "Percentage of ADR Reports", fill = "PREPARE Drug") + 
++ scale_fill_manual(values = c(`PREPARE Drugs` = "blue")) + 
++ theme_minimal() + theme(legend.title = element_blank())
+> percentage_per_decade_CYP2D6 <- ADR_master %>% group_by(Decade) %>% 
++ summarise(Total = n(), PREPARE_drugs = sum(PREPARE_drugs)) %>% 
++ mutate(Percentage_PREPARE_drugs = (PREPARE_drugs/Total) * 
++ 
++ 100)
+> plot_decade_percentage <- ggplot(percentage_per_decade, aes(x = as.factor(Decade))) + 
++ geom_bar(aes(y = Percentage_PREPARE_drugs, fill = "CYP2D6_PREPARE"), 
++ 
++ stat = "identity", position = "stack") + labs(x = "Decade", 
++ y = "Percentage of ADR Reports", fill = "PREPARE Drug") + 
++ scale_fill_manual(values = c(`PREPARE Drugs` = "blue")) + 
++ theme_minimal() + theme(legend.title = element_blank())
+> percentage_per_decade_CYP2D6 <- ADR_master %>% group_by(Decade) %>% 
++ summarise(Total = n(), PREPARE_drugs = sum(PREPARE_drugs)) %>% 
++ mutate(Percentage_PREPARE_drugs = (PREPARE_drugs/Total) * 
++ 
++ 100)
+> plot_decade_percentage <- ggplot(percentage_per_decade, aes(x = as.factor(Decade))) + 
++ geom_bar(aes(y = Percentage_PREPARE_drugs, fill = "CYP2D6_PREPARE"), 
++ 
++ stat = "identity", position = "stack") + labs(x = "Decade", 
++ y = "Percentage of ADR Reports", fill = "PREPARE Drug") + 
++ scale_fill_manual(values = c(`PREPARE Drugs` = "blue")) + 
++ theme_minimal() + theme(legend.title = element_blank())
+> plot_PREPARE_drugs <- ggplot(percentage_per_decade, aes(x = Decade, 
++ y = Percentage_CYP2D6)) + geom_bar(stat = "identity", fill = "skyblue", 
++ width = 0.7) + labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE Drugs per Decade") + 
++ theme_minimal()
+> print(plot_PREPARE_drugs)
+> plot_PREPARE_drugs <- ggplot(percentage_per_decade, aes(x = Decade, 
++ y = Percentage_CYP2D6)) + geom_bar(stat = "identity", fill = "skyblue", 
++ width = 3) + labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE Drugs per Decade") + 
++ theme_minimal()
+> print(plot_PREPARE_drugs)
+> plot_PREPARE_drugs <- ggplot(percentage_per_decade, aes(x = Decade, 
++ y = Percentage_CYP2D6)) + geom_bar(stat = "identity", fill = "skyblue", 
++ width = 6) + labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE Drugs per Decade") + 
++ theme_minimal()
+> print(plot_PREPARE_drugs)
+> percentage_per_decade_PREPARE <- ADR_master %>% group_by(Decade) %>% 
++ summarise(Total = n(), PREPARE_drugs = sum(PREPARE_drugs)) %>% 
++ mutate(Percentage_PREPARE_drugs = (PREPARE_drugs/Total) * 
++ 
++ 100)
+> plot_PREPARE_drugs <- ggplot(percentage_per_decade, aes(x = Decade, 
++ y = Percentage_CYP2D6)) + geom_bar(stat = "identity", fill = "skyblue", 
++ width = 6) + labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE Drugs per Decade") + 
++ theme_minimal()
+> print(plot_PREPARE_drugs)
+> calculate_percentage_per_decade <- function(drug_category_column) {
++ total_reports_per_decade <- table((ADR_master$RECVD_YEAR_1%/%10) * 
++ 
++ 10)
++ drug_reports_per_decade <- table((ADR_master$RECVD_YEAR_1%/%10) * 
++ 
++ 10, drug_category_column)
++ percentage_per_decade <- (drug_reports_per_decade[, "1"]/total_reports_per_decade) * 
++ 
++ 100
++ data.frame(Decade = as.numeric(names(percentage_per_decade)), 
++ 
++ Percentage = as.numeric(percentage_per_decade))
++ }
+> df_prepare_overall <- calculate_percentage_per_decade(ADR_master$PREPARE_drugs)
+> plot_prepare_overall <- ggplot(df_prepare_overall, aes(x = Decade, 
++ y = Percentage)) + geom_bar(stat = "identity", fill = "skyblue", 
++ color = "black") + labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with 'PREPARE' Drugs Overall per Decade") + 
++ theme_minimal()
+> print(plot_prepare_overall)
+> percentage_per_decade <- ADR_master %>% group_by(Decade) %>% 
++ summarise(Total = n(), PREPARE = sum(PREPARE_drugs == 1)) %>% 
++ mutate(Percentage_PREPARE = (PREPARE/Total) * 100)
+> library(ggplot2)
+> plot_prepare_overall <- ggplot(percentage_per_decade, aes(x = factor(Decade), 
++ y = Percentage_PREPARE)) + geom_bar(stat = "identity", fill = "skyblue") + 
++ labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE Drugs per Decade") + 
++ theme_minimal()
+> print(plot_prepare_overall)
+> percentage_per_gender <- ADR_master %>% group_by(Decade, SEX_1) %>% 
++ summarise(Total = n(), PREPARE = sum(PREPARE_drugs == 1)) %>% 
++ mutate(Percentage_PREPARE = (PREPARE/Total) * 100)
+> plot_prepare_gender <- ggplot(percentage_per_gender, aes(x = factor(Decade), 
++ y = Percentage_PREPARE, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "dodge") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender and Decade") + 
++ theme_minimal()
+> print(plot_prepare_gender)
+> percentage_per_age <- ADR_master %>% group_by(Decade, AGE_10_1) %>% 
++ summarise(Total = n(), PREPARE = sum(PREPARE_drugs == 1)) %>% 
++ mutate(Percentage_PREPARE = (PREPARE/Total) * 100)
+> plot_prepare_age <- ggplot(percentage_per_age, aes(x = factor(Decade), 
++ y = Percentage_PREPARE, fill = AGE_10_1)) + geom_bar(stat = "identity", 
++ position = "dodge") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Age Range and Decade") + 
++ theme_minimal()
+> print(plot_prepare_age)
+> plot_prepare_gender <- ggplot(percentage_per_gender, aes(x = factor(Decade), 
++ y = Percentage_PREPARE, fill = Gender)) + geom_bar(stat = "identity", 
++ position = "dodge") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender and Decade") + 
++ theme_minimal()
+> plot_prepare_gender <- ggplot(percentage_per_gender, aes(x = factor(Decade), 
++ y = Percentage_PREPARE, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "dodge") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender and Decade") + 
++ theme_minimal()
+> print(plot_prepare_gender)
+> percentage_per_age <- ADR_master %>% group_by(Decade, AGE_10_1) %>% 
++ summarise(Total = n(), PREPARE = sum(PREPARE_drugs == 1)) %>% 
++ mutate(Percentage_PREPARE = (PREPARE/Total) * 100)
+> plot_prepare_age <- ggplot(percentage_per_age, aes(x = factor(Decade), 
++ y = Percentage_PREPARE, fill = AGE_10_1)) + geom_bar(stat = "identity", 
++ position = "dodge") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Age Range and Decade") + 
++ theme_minimal()
+> print(percentage_per_age)
+# A tibble: 87 × 5
+# Groups:   Decade [7]
+   Decade AGE_10_1 Total PREPARE Percentage_PREPARE
+    <dbl> <chr>    <int>   <int>              <dbl>
+ 1   1960 0           84       4               4.76
+ 2   1960 10          46       1               2.17
+ 3   1960 20         145       5               3.45
+ 4   1960 30         154       7               4.55
+ 5   1960 40         175       9               5.14
+ 6   1960 50          89       5               5.62
+ 7   1960 60         111       9               8.11
+ 8   1960 70          71       4               5.63
+ 9   1960 80          25       0               0   
+10   1960 <NA>     20441     932               4.56
+# ℹ 77 more rows
+# ℹ Use `print(n = ...)` to see more rows
+> print(percentage_per_gender)
+# A tibble: 21 × 5
+# Groups:   Decade [7]
+   Decade SEX_1    Total PREPARE Percentage_PREPARE
+    <dbl> <chr>    <int>   <int>              <dbl>
+ 1   1960 Female   16439     662               4.03
+ 2   1960 Male      4559     297               6.51
+ 3   1960 Unknown    343      17               4.96
+ 4   1970 Female   42749    1585               3.71
+ 5   1970 Male     21464     870               4.05
+ 6   1970 Unknown   1105      30               2.71
+ 7   1980 Female   84226    2968               3.52
+ 8   1980 Male     46192    1835               3.97
+ 9   1980 Unknown   2082     116               5.57
+10   1990 Female  108943   14683              13.5 
+# ℹ 11 more rows
+# ℹ Use `print(n = ...)` to see more rows
+> print(percentage_per_decade)
+# A tibble: 7 × 4
+  Decade  Total PREPARE Percentage_PREPARE
+   <dbl>  <int>   <int>              <dbl>
+1   1960  21341     976               4.57
+2   1970  65318    2485               3.80
+3   1980 132500    4919               3.71
+4   1990 181754   24069              13.2 
+5   2000 229721   27627              12.0 
+6   2010 396779   33217               8.37
+7   2020 318299   22496               7.07
+> plot_prepare_gender <- ggplot(percentage_per_gender, aes(x = factor(Decade), 
++ y = Percentage_PREPARE, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "dodge") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs Broken Down into Gender") + 
++ theme_minimal()
+> print(plot_prepare_gender)
+> plot_prepare_gender <- ggplot(percentage_per_gender, aes(x = factor(Decade), 
++ y = Percentage_PREPARE, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "dodge") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs Broken Down by Gender") + 
++ theme_minimal()
+> print(plot_prepare_gender)
+> percentage_per_gender <- ADR_master %>% group_by(Decade, SEX_1) %>% 
++ summarise(Total = n(), PREPARE = sum(PREPARE_drugs == 1)) %>% 
++ mutate(Percentage_PREPARE = (PREPARE/Total) * 100) %>% pivot_wider(names_from = SEX_1, 
++ values_from = Percentage_PREPARE) %>% mutate(Total_PREPARE = Male + 
++ Female + Unknown, Percentage_PREPARE = Total_PREPARE/Total * 
++ 100)
+> percentage_non_prepare_gender <- ADR_master %>% group_by(Decade, 
++ SEX_1) %>% summarise(Total = n(), Non_PREPARE = sum(PREPARE_drugs == 
++ 0)) %>% mutate(Percentage_NON_PREPARE = (Non_PREPARE/Total) * 
++ 100) %>% pivot_wider(names_from = SEX_1, values_from = Percentage_NON_PREPARE)
+> combined_data <- merge(percentage_per_gender, percentage_non_prepare_gender, 
++ by = c("Decade"))
+> plot_stacked_bar <- ggplot(combined_data, aes(x = factor(Decade))) + 
++ geom_bar(aes(y = Percentage_PREPARE, fill = "PREPARE"), stat = "identity") + 
++ geom_bar(aes(y = Male + Female + Unknown, fill = "NON-PREPARE"), 
++ 
++ stat = "identity") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender and Decade") + 
++ scale_fill_manual(values = c(PREPARE = "skyblue", `NON-PREPARE` = "orange")) + 
++ theme_minimal() + theme(legend.position = "none")
+> percentage_per_gender <- ADR_master %>% group_by(Decade, SEX_1) %>% 
++ summarise(Total = n(), PREPARE = sum(PREPARE_drugs == 1)) %>% 
++ mutate(Percentage_PREPARE = (PREPARE/Total) * 100) %>% pivot_wider(names_from = SEX_1, 
++ values_from = Percentage_PREPARE) %>% mutate(Total_PREPARE = Male + 
++ Female + Unknown, Percentage_PREPARE = Total_PREPARE/Total * 
++ 100)
+> percentage_non_prepare_gender <- ADR_master %>% group_by(Decade, 
++ SEX_1) %>% summarise(Total = n(), Non_PREPARE = sum(PREPARE_drugs == 
++ 0)) %>% mutate(Percentage_NON_PREPARE = (Non_PREPARE/Total) * 
++ 100) %>% pivot_wider(names_from = SEX_1, values_from = Percentage_NON_PREPARE)
+> combined_data <- merge(percentage_per_gender, percentage_non_prepare_gender, 
++ by = c("Decade"))
+> plot_stacked_bar <- ggplot(combined_data, aes(x = factor(Decade))) + 
++ geom_bar(aes(y = Percentage_PREPARE, fill = "PREPARE"), stat = "identity") + 
++ geom_bar(aes(y = Male + Female + Unknown, fill = "NON-PREPARE"), 
++ 
++ stat = "identity") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender and Decade") + 
++ scale_fill_manual(values = c(PREPARE = "skyblue", `NON-PREPARE` = "orange")) + 
++ theme_minimal() + theme(legend.position = "none")
+> plot_stacked_bar <- ggplot(combined_data, aes(x = factor(Decade))) + 
++ geom_bar(aes(y = Percentage_PREPARE, fill = "PREPARE"), stat = "identity") + 
++ geom_bar(aes(y = Male + Female + Unknown, fill = "NON-PREPARE"), 
++ 
++ stat = "identity") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender and Decade") + 
++ scale_fill_manual(values = c(PREPARE = "skyblue", `NON-PREPARE` = "orange")) + 
++ theme_minimal() + theme(legend.position = "none")
+> plot_stacked_bar <- ggplot(combined_data, aes(x = factor(Decade))) + 
++ geom_bar(aes(y = Percentage_PREPARE, fill = "PREPARE"), stat = "identity") + 
++ geom_bar(aes(y = Male + Female + Unknown, fill = "NON-PREPARE"), 
++ 
++ stat = "identity") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender and Decade") + 
++ scale_fill_manual(values = c(PREPARE = "skyblue", `NON-PREPARE` = "orange")) + 
++ theme_minimal() + theme(legend.position = "none")
+> plot_stacked_bar <- ggplot(combined_data, aes(x = factor(Decade))) + 
++ geom_bar(aes(y = Percentage_PREPARE, fill = "PREPARE"), stat = "identity") + 
++ geom_bar(aes(y = Male + Female + Unknown, fill = "NON-PREPARE"), 
++ 
++ stat = "identity") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender and Decade") + 
++ scale_fill_manual(values = c(PREPARE = "skyblue", `NON-PREPARE` = "orange")) + 
++ theme_minimal() + theme(legend.position = "none")
+> percentage_per_gender <- ADR_master %>% group_by(Decade, SEX_1) %>% 
++ summarise(Total = n(), PREPARE = sum(PREPARE_drugs == 1)) %>% 
++ mutate(Percentage_PREPARE = (PREPARE/Total) * 100) %>% pivot_wider(names_from = SEX_1, 
++ values_from = Percentage_PREPARE) %>% mutate(Total_PREPARE = Male + 
++ Female + Unknown, Percentage_PREPARE = Total_PREPARE/Total * 
++ 100)
+> percentage_non_prepare_gender <- ADR_master %>% group_by(Decade, 
++ SEX_1) %>% summarise(Total = n(), Non_PREPARE = sum(PREPARE_drugs == 
++ 0)) %>% mutate(Percentage_NON_PREPARE = (Non_PREPARE/Total) * 
++ 100) %>% pivot_wider(names_from = SEX_1, values_from = Percentage_NON_PREPARE)
+> combined_data <- merge(percentage_per_gender, percentage_non_prepare_gender, 
++ by = c("Decade"))
+> plot_stacked_bar <- ggplot(combined_data, aes(x = factor(Decade))) + 
++ geom_bar(aes(y = Percentage_PREPARE, fill = "PREPARE"), stat = "identity") + 
++ geom_bar(aes(y = Male + Female + Unknown, fill = "NON-PREPARE"), 
++ 
++ stat = "identity") + labs(x = "Decade", y = "Percentage", 
++ title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender and Decade") + 
++ scale_fill_manual(values = c(PREPARE = "skyblue", `NON-PREPARE` = "orange")) + 
++ theme_minimal() + theme(legend.position = "none")
+> percentage_per_gender_prepare <- ADR_master %>% group_by(SEX_1, 
++ PREPARE_drugs) %>% summarise(Total = n()) %>% mutate(Percentage = Total/sum(Total) * 
++ 100)
+> plot_gender_prepare <- ggplot(percentage_per_gender_prepare, 
++ aes(x = factor(SEX_1), y = Percentage, fill = factor(PREPARE_drugs))) + 
++ geom_bar(stat = "identity", position = "stack") + labs(x = "Gender", 
++ y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender") + 
++ scale_fill_manual(values = c(PREPARE = "skyblue", `Non-PREPARE` = "orange")) + 
++ theme_minimal()
+> print(plot_gender_prepare)
+> ADR_master$PREPARE_drugs <- factor(ADR_master$PREPARE_drugs, 
++ levels = c(0, 1), labels = c("Non-PREPARE", "PREPARE"))
+> percentage_per_gender_prepare <- ADR_master %>% group_by(SEX_1, 
++ PREPARE_drugs) %>% summarise(Total = n()) %>% mutate(Percentage = Total/sum(Total) * 
++ 100)
+> plot_gender_prepare <- ggplot(percentage_per_gender_prepare, 
++ aes(x = factor(SEX_1), y = Percentage, fill = PREPARE_drugs)) + 
++ geom_bar(stat = "identity", position = "stack") + labs(x = "Gender", 
++ y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender") + 
++ scale_fill_manual(values = c(PREPARE = "skyblue", `Non-PREPARE` = "orange")) + 
++ theme_minimal()
+> print(plot_gender_prepare)
+> plot_gender_prepare <- ggplot(percentage_per_gender_prepare, 
++ aes(x = factor(SEX_1), y = Percentage, fill = PREPARE_drugs)) + 
++ geom_bar(stat = "identity", position = "stack") + labs(x = "Gender", 
++ y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE Drugs by Gender") + 
++ scale_fill_manual(values = c(PREPARE = "skyblue", `Non-PREPARE` = "#b3de69")) + 
++ theme_minimal()
+> print(plot_gender_prepare)
+> percentage_per_gender_prepare <- ADR_master %>% group_by(SEX_1, 
++ PREPARE_drugs) %>% summarise(Total = n()) %>% mutate(Percentage = Total/sum(Total) * 
++ 100)
+> ADR_master$PREPARE_drugs <- factor(ADR_master$PREPARE_drugs, 
++ levels = c(0, 1), labels = c("Non-PREPARE", "PREPARE"))
+> percentage_per_gender_prepare <- ADR_master %>% group_by(SEX_1, 
++ PREPARE_drugs) %>% summarise(Total = n()) %>% mutate(Percentage = Total/sum(Total) * 
++ 100)
+> library(ggplot2)
+> library(dplyr)
+> library(tidyr)
+> ADR_master$PREPARE_drugs <- factor(ADR_master$PREPARE_drugs, 
++ levels = c(0, 1), labels = c("Non-PREPARE", "PREPARE"))
+> percentage_per_gender_prepare <- ADR_master %>% group_by(SEX_1, 
++ PREPARE_drugs) %>% summarise(Total = n()) %>% mutate(Percentage = Total/sum(Total) * 
++ 100)
+> num_prepare_female <- sum(ADR_master$PREPARE_drugs == 1 & ADR_master$SEX_1 == 
++ "Female")
+> print(num_prepare_female)
+[1] NA
+> num_prepare_female <- sum(!is.na(ADR_master$PREPARE_drugs) & 
++ ADR_master$PREPARE_drugs == 1 & !is.na(ADR_master$SEX_1) & 
++ ADR_master$SEX_1 == "Female")
+> print(num_prepare_female)
+[1] 0
+> count <- sum(ADR_master$PREPARE_drugs == 1 & ADR_master$SEX_1 == 
++ "Female")
+> print(count)
+[1] NA
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> percentage_prepare_gender <- ADR_master %>% filter(!is.na(SEX_1) & 
++ !is.na(PREPARE_drugs)) %>% group_by(SEX_1) %>% summarise(Total_PREPARE = sum(PREPARE_drugs), 
++ Percentage_PREPARE = (Total_PREPARE/sum(Total_PREPARE)) * 
++ 
++ 100)
+> percentage_non_prepare_gender <- ADR_master %>% filter(!is.na(SEX_1) & 
++ !is.na(PREPARE_drugs)) %>% group_by(SEX_1) %>% summarise(Total_NON_PREPARE = sum(ifelse(PREPARE_drugs == 
++ 0, 1, 0)), Percentage_NON_PREPARE = (Total_NON_PREPARE/sum(Total_NON_PREPARE)) * 
++ 100)
+> combined_data <- bind_rows(mutate(percentage_prepare_gender, 
++ Drug_Type = "Prepare"), mutate(percentage_non_prepare_gender, 
++ Drug_Type = "Non-Prepare"))
+> plot_stacked_bar <- ggplot(combined_data, aes(x = SEX, y = Percentage, 
++ fill = Drug_Type)) + geom_bar(stat = "identity", position = "stack") + 
++ labs(x = "Gender", y = "Percentage", title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Prepare = "skyblue", `Non-Prepare` = "orange")) + 
++ theme_minimal()
+> plot_stacked_bar <- ggplot(combined_data, aes(x = SEX_1, y = Percentage, 
++ fill = Drug_Type)) + geom_bar(stat = "identity", position = "stack") + 
++ labs(x = "Gender", y = "Percentage", title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Prepare = "skyblue", `Non-Prepare` = "orange")) + 
++ theme_minimal()
+> plot_stacked_bar <- ggplot(combined_data, aes(x = SEX_1, y = Percentage, 
++ fill = Drug_Type)) + geom_bar(stat = "identity", position = "stack") + 
++ labs(x = "Gender", y = "Percentage", title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Prepare = "skyblue", `Non-Prepare` = "orange")) + 
++ theme_minimal()
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> total_counts <- ADR_master %>% filter(!is.na(SEX_1) & !is.na(PREPARE_drugs)) %>% 
++ group_by(SEX_1, PREPARE_drugs) %>% summarise(Total = n(), 
++ .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "Prepare", "Non-Prepare"))
+> total_gender_counts <- total_counts %>% group_by(SEX_1) %>% summarise(Overall_Total = sum(Total), 
++ .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_gender_counts, 
++ by = "SEX_1") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(SEX_1, Drug_Type, Percentage)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack") + labs(x = "Drug Type", y = "Percentage", 
++ title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "blue", Female = "pink", 
++ 
++ Unknown = "grey")) + theme_minimal()
+> print(plot_stacked_bar)
+> unique(combined_data$SEX_1)
+character(0)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack") + labs(x = "Drug Type", y = "Percentage", 
++ title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(MALE = "blue", FEMALE = "pink", 
++ 
++ UNKNOWN = "grey")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack") + labs(x = "Drug Type", y = "Percentage", 
++ title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "blue", Female = "pink", 
++ 
++ Unknown = "grey")) + theme_minimal()
+> print(plot_stacked_bar)
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "Prepare", "Non-Prepare"))
+> total_gender_counts <- total_counts %>% group_by(SEX_1) %>% summarise(Overall_Total = sum(Total), 
++ .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_gender_counts, 
++ by = "SEX_1") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(SEX_1, Drug_Type, Percentage)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack") + labs(x = "Drug Type", y = "Percentage", 
++ title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "blue", Female = "pink", 
++ 
++ Unknown = "grey")) + theme_minimal()
+> print(plot_stacked_bar)
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "Prepare", "Non-Prepare"))
+> print(total_counts)
+# A tibble: 3 × 4
+  SEX_1   PREPARE_drugs  Total Drug_Type
+  <chr>           <dbl>  <int> <lgl>    
+1 Female             NA 769852 NA       
+2 Male               NA 512241 NA       
+3 Unknown            NA  63619 NA       
+> sum(is.na(ADR_master$PREPARE_drugs))
+[1] 1345712
+> is.na(ADR_master$PREPARE_drugs)
+   [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+  [17] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+  [33] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+  [49] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+  [65] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+  [81] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+  [97] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [113] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [129] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [145] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [161] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [177] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [193] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [209] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [225] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [241] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [257] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [273] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [289] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [305] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [321] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [337] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [353] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [369] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [385] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [401] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [417] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [433] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [449] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [465] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [481] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [497] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [513] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [529] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [545] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [561] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [577] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [593] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [609] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [625] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [641] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [657] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [673] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [689] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [705] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [721] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [737] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [753] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [769] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [785] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [801] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [817] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [833] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [849] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [865] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [881] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [897] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [913] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [929] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [945] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [961] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [977] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [993] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+ [ reached getOption("max.print") -- omitted 1344712 entries ]
+> ADR_master <- ADR_master %>% select(-PREPARE_drugs)
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_Drugs$PREPARE_Drugs)
+> is.na(ADR_master$PREPARE_drugs)
+   [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [14] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [27] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [40] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [53] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [66] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [79] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [92] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [105] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [118] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [131] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [144] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [157] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [170] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [183] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [196] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [209] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [222] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [235] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [248] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [261] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [274] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [287] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [300] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [313] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [326] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [339] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [352] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [365] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [378] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [391] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [404] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [417] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [430] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [443] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [456] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [469] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [482] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [495] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [508] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [521] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [534] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [547] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [560] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [573] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [586] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [599] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [612] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [625] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [638] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [651] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [664] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [677] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [690] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [703] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [716] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [729] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [742] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [755] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [768] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [781] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [794] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [807] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [820] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [833] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [846] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [859] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [872] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [885] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [898] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [911] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [924] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [937] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [950] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [963] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [976] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [989] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [ reached getOption("max.print") -- omitted 1344712 entries ]
+> sum(is.na(ADR_master$PREPARE_drugs))
+[1] 0
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "Prepare", "Non-Prepare"))
+> print(total_counts)
+# A tibble: 6 × 4
+  SEX_1   PREPARE_drugs  Total Drug_Type  
+  <chr>           <dbl>  <int> <chr>      
+1 Female              0 704949 Non-Prepare
+2 Female              1  64903 Prepare    
+3 Male                0 466365 Non-Prepare
+4 Male                1  45876 Prepare    
+5 Unknown             0  58609 Non-Prepare
+6 Unknown             1   5010 Prepare    
+> total_gender_counts <- total_counts %>% group_by(SEX_1) %>% summarise(Overall_Total = sum(Total), 
++ .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_gender_counts, 
++ by = "SEX_1") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(SEX_1, Drug_Type, Percentage)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack") + labs(x = "Drug Type", y = "Percentage", 
++ title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "blue", Female = "pink", 
++ 
++ Unknown = "grey")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack") + labs(x = "Drug Type", y = "Percentage", 
++ title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "green", Female = "orange", 
++ 
++ Unknown = "blue")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack") + labs(x = "Drug Type", y = "Percentage", 
++ title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> total_counts <- ADR_master %>% filter(!is.na(PREPARE_drugs) & 
++ !is.na(SEX_1)) %>% group_by(SEX_1, PREPARE_drugs) %>% summarise(Total = n(), 
++ .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "Prepare", "Non-Prepare"))
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(SEX_1, Drug_Type, Percentage)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack") + labs(x = "Drug Type", y = "Percentage", 
++ title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 5) + labs(x = "Drug Type", y = "Percentage", 
++ title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.6) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.4) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "Prepare", "Non-Prepare"))
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(SEX_1, Drug_Type, Percentage)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.4) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Percentage of ADR Reports by Gender and Drug Type") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.4) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Comparing the Percentage of PREPARE drug ADR reports vs \n
++    Non-PREPARE drug ADR reports by Gender") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.4) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Comparing the Percentage of PREPARE drug ADR Reports vs \n
++    Non-PREPARE drug ADR Reports by Gender") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.4) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Comparing the Percentage of PREPARE Drug ADR Reports vs \n
++    Non-PREPARE Drug ADR Reports by Gender") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.4) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Comparing the Percentage of PREPARE Drugs ADR Reports vs \n
++    Non-PREPARE Drugs ADR Reports by Gender") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(SEX_1, Drug_Type, Percentage)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.4) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Comparing the Percentage of PREPARE Drugs ADR Reports vs \n
++    Non-PREPARE Drugs ADR Reports by Gender") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> "unknown" %in% ADR_master$AGE_10_1
+[1] FALSE
+> is.na(ADR_master$AGE_10_1)
+   [1] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [17] FALSE  TRUE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [33] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE  TRUE
+  [49] FALSE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE  TRUE  TRUE FALSE  TRUE FALSE FALSE FALSE
+  [65] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [81] FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+  [97] FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+ [113]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE  TRUE
+ [129] FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [145]  TRUE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+ [161] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+ [177] FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE
+ [193] FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [209] FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+ [225] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+ [241] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [257] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
+ [273] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE
+ [289]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [305] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+ [321] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [337] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [353] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [369] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [385] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [401] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [417]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE
+ [433] FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [449]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [465] FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [481] FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+ [497] FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE
+ [513]  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE
+ [529]  TRUE FALSE FALSE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE FALSE FALSE
+ [545] FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+ [561] FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE
+ [577] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [593] FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+ [609]  TRUE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [625] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [641] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [657] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+ [673] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [689] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+ [705] FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE
+ [721] FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+ [737] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE FALSE
+ [753] FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE FALSE
+ [769] FALSE  TRUE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+ [785] FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+ [801] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [817] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE
+ [833] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [849] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE
+ [865] FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+ [881]  TRUE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE FALSE FALSE  TRUE
+ [897] FALSE FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE
+ [913] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+ [929] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+ [945]  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE
+ [961]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+ [977] FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+ [993]  TRUE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE
+ [ reached getOption("max.print") -- omitted 1344712 entries ]
+> any(is.na(ADR_master$AGE_10_1))
+[1] TRUE
+> any(is.na(ADR_master$SEX_1))
+[1] FALSE
+> total_counts <- ADR_master %>% group_by(AGE_10_1, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> na_count <- sum(is.na(ADR_master$AGE_10_1))
+> na_row <- tibble(AGE_10_1 = NA, PREPARE_drugs = NA, Total = na_count, 
++ Drug_Type = "Non-PREPARE")
+> total_counts <- bind_rows(total_counts, na_row)
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(AGE_10_1, Drug_Type, Percentage)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = factor(AGE_10_1))) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.4) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Comparing the Percentage of PREPARE Drugs ADR Reports vs Non-PREPARE Drugs ADR Reports by Gender") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3", `NA` = "grey")) + theme_minimal()
+> print(plot_stacked_bar)
+> filtered_na_row <- na_row %>% filter(!is.na(AGE_10_1) | !is.na(PREPARE_drugs))
+> colnames(combined_data)
+[1] "AGE_10_1"   "Drug_Type"  "Percentage"
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(SEX_1, Drug_Type, Percentage)
+> plot_stacked_bar <- ggplot(combined_data, aes(x = Drug_Type, 
++ y = Percentage, fill = SEX_1)) + geom_bar(stat = "identity", 
++ position = "stack", width = 0.4) + labs(x = "Drug Type", 
++ y = "Percentage", title = "Comparing the Percentage of PREPARE Drugs ADR Reports vs \n
++    Non-PREPARE Drugs ADR Reports by Gender") + 
++ scale_fill_manual(values = c(Male = "#8dd3c7", Female = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar)
+> contingency_table <- table(combined_data$SEX_1, combined_data$Drug_Type)
+> chi_sq_test <- chisq.test(contingency_table)
+> print(chi_sq_test)
+
+	Pearson's Chi-squared test
+
+data:  contingency_table
+X-squared = 0, df = 2, p-value = 1
+
+> print(contingency_table)
+         
+          Non-PREPARE PREPARE
+  Female            1       1
+  Male              1       1
+  Unknown           1       1
+> print(combined_data)
+# A tibble: 6 × 3
+  SEX_1   Drug_Type   Percentage
+  <chr>   <chr>            <dbl>
+1 Female  Non-PREPARE      57.3 
+2 Female  PREPARE          56.1 
+3 Male    Non-PREPARE      37.9 
+4 Male    PREPARE          39.6 
+5 Unknown Non-PREPARE       4.77
+6 Unknown PREPARE           4.33
+> print(total_drug_counts)
+# A tibble: 2 × 2
+  Drug_Type   Overall_Total
+  <chr>               <int>
+1 Non-PREPARE       1229923
+2 PREPARE            115789
+> print(total_counts)
+# A tibble: 6 × 4
+  SEX_1   PREPARE_drugs  Total Drug_Type  
+  <chr>           <dbl>  <int> <chr>      
+1 Female              0 704949 Non-PREPARE
+2 Female              1  64903 PREPARE    
+3 Male                0 466365 Non-PREPARE
+4 Male                1  45876 PREPARE    
+5 Unknown             0  58609 Non-PREPARE
+6 Unknown             1   5010 PREPARE    
+> contingency_table <- table(combined_data$SEX_1, combined_data$Drug_Type)
+> chi_sq_test <- chisq.test(contingency_table)
+> print(chi_sq_test)
+
+	Pearson's Chi-squared test
+
+data:  contingency_table
+X-squared = 0, df = 2, p-value = 1
+
+> contingency_table_prepare <- table(total_counts$SEX_1[total_counts$Drug_Type == 
++ "PREPARE"])
+> contingency_table_non_prepare <- table(total_counts$SEX_1[total_counts$Drug_Type == 
++ "Non-PREPARE"])
+> chi_sq_test_prepare <- chisq.test(contingency_table_prepare)
+> print("Chi-squared test for PREPARE drug ADRs:")
+[1] "Chi-squared test for PREPARE drug ADRs:"
+> print(chi_sq_test_prepare)
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table_prepare
+X-squared = 0, df = 2, p-value = 1
+
+> chi_sq_test_non_prepare <- chisq.test(contingency_table_non_prepare)
+> print("Chi-squared test for non-PREPARE drug ADRs:")
+[1] "Chi-squared test for non-PREPARE drug ADRs:"
+> print(chi_sq_test_non_prepare)
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table_non_prepare
+X-squared = 0, df = 2, p-value = 1
+
+> contingency_table <- table(combined_data$SEX_1, combined_data$Drug_Type)
+> print(contingency_table_prepare)
+
+ Female    Male Unknown 
+      1       1       1 
+> print(total_counts)
+# A tibble: 6 × 4
+  SEX_1   PREPARE_drugs  Total Drug_Type  
+  <chr>           <dbl>  <int> <chr>      
+1 Female              0 704949 Non-PREPARE
+2 Female              1  64903 PREPARE    
+3 Male                0 466365 Non-PREPARE
+4 Male                1  45876 PREPARE    
+5 Unknown             0  58609 Non-PREPARE
+6 Unknown             1   5010 PREPARE    
+> table(total_counts$SEX_1[total_counts$Drug_Type == "non prepare"])
+< table of extent 0 >
+> contingency_table_prepare <- table(total_counts$SEX_1[total_counts$Drug_Type == 
++ "PREPARE"])
+> contingency_table_non_prepare <- table(total_counts$SEX_1[total_counts$Drug_Type == 
++ "Non-PREPARE"])
+> chi_sq_test_prepare <- chisq.test(contingency_table_prepare)
+> print("Chi-squared test for PREPARE drug ADRs:")
+[1] "Chi-squared test for PREPARE drug ADRs:"
+> print(chi_sq_test_prepare)
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table_prepare
+X-squared = 0, df = 2, p-value = 1
+
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n()) %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> contingency_table_prepare <- table(total_counts$SEX_1[total_counts$Drug_Type == 
++ "PREPARE"])
+> contingency_table_non_prepare <- table(total_counts$SEX_1[total_counts$Drug_Type == 
++ "Non-PREPARE"])
+> chi_sq_test_prepare <- chisq.test(contingency_table_prepare)
+> print(chi_sq_test_prepare)
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table_prepare
+X-squared = 0, df = 2, p-value = 1
+
+> chi_sq_test_non_prepare <- chisq.test(contingency_table_non_prepare)
+> print(contingency_table_prepare)
+
+ Female    Male Unknown 
+      1       1       1 
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n()) %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> contingency_table_prepare <- table(total_counts$SEX_1[total_counts$Drug_Type == 
++ "PREPARE"])
+> contingency_table_non_prepare <- table(total_counts$SEX_1[total_counts$Drug_Type == 
++ "Non-PREPARE"])
+> print(contingency_table_prepare)
+
+ Female    Male Unknown 
+      1       1       1 
