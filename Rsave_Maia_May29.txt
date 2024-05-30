@@ -1,0 +1,225 @@
+> library(readr)
+> PREPARE_drugs <- read_csv("PREPARE_drugs.csv")
+> View(PREPARE_drugs)
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C9_PREPARE)
+> ADR_master$RECVD_YEAR_1 <- as.numeric(as.character(ADR_master$RECVD_YEAR_1))
+> ADR_master$Decade <- (ADR_master$RECVD_YEAR_1%/%10) * 10
+> library(dplyr)
+> library(ggplot2)
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> na_values <- c("880", "600", "110", "120")
+> ADR_master <- ADR_master %>% mutate(new_AGE = ifelse(is.na(AGE_10_1) | 
++ AGE_10_1 %in% na_values, "unknown", as.character(AGE_10_1)))
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> total_counts <- ADR_master %>% group_by(new_AGE, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(new_AGE, Drug_Type, Percentage)
+> combined_data$new_AGE <- factor(combined_data$new_AGE, levels = c("0", 
++ "10", "20", "30", "40", "50", "60", "70", "80", "90", "100", 
++ "unknown"))
+> plot_stacked_bar_unstacked <- ggplot(combined_data, aes(x = new_AGE, 
++ y = Percentage, fill = Drug_Type)) + geom_bar(stat = "identity", 
++ position = "dodge", width = 0.9) + labs(x = "Drug Type", 
++ y = "Percentage of ADR Reports", title = "Comparing the Percentage of PREPARE Drugs ADR Reports vs Non-PREPARE Drugs ADR Reports by AGE") + 
++ scale_fill_manual(values = c(PREPARE = "#8dd3c7", `Non-PREPARE` = "#ffffb3", 
++ 
++ Unknown = "#80b1d3")) + theme_minimal()
+> print(plot_stacked_bar_unstacked)
+> View(total_counts)
+> prepare_data <- total_counts %>% filter(Drug_Type == "PREPARE") %>% 
++ pull(new_AGE)
+> non_prepare_data <- total_counts %>% filter(Drug_Type == "Non-PREPARE") %>% 
++ pull(new_AGE)
+> prepare_mean <- mean(prepare_data, na.rm = TRUE)
+> non_prepare_mean <- mean(non_prepare_data, na.rm = TRUE)
+> total_counts <- ADR_master %>% group_by(new_AGE, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE")) %>% filter(new_AGE != "unknown") %>% 
++ mutate(new_AGE = as.numeric(new_AGE))
+> prepare_data <- total_counts %>% filter(Drug_Type == "PREPARE") %>% 
++ pull(new_AGE)
+> non_prepare_data <- total_counts %>% filter(Drug_Type == "Non-PREPARE") %>% 
++ pull(new_AGE)
+> prepare_mean <- mean(prepare_data, na.rm = TRUE)
+> non_prepare_mean <- mean(non_prepare_data, na.rm = TRUE)
+> prepare_sd <- sd(prepare_data, na.rm = TRUE)
+> non_prepare_sd <- sd(non_prepare_data, na.rm = TRUE)
+> t_test_result <- t.test(prepare_data, non_prepare_data)
+> View(t_test_result)
+> print(t_test_result)
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 4.17PB/s                                                                                              
+	Welch Two Sample t-test
+
+data:  prepare_data and non_prepare_data
+t = 0, df = 20, p-value = 1
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -29.49998  29.49998
+sample estimates:
+mean of x mean of y 
+       50        50 
+
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(SEX_1, Drug_Type, Percentage)
+> View(combined_data)
+> contingency_table <- table(ADR_master$SEX_1, ADR_master$PREPARE_drugs)
+> print(contingency_table)
+         
+               0      1
+  Female  704949  64903
+  Male    466365  45876
+  Unknown  58609   5010
+> chi_squared_test <- chisq.test(contingency_table)
+> print(chi_squared_test)
+
+	Pearson's Chi-squared test
+
+data:  contingency_table
+X-squared = 153.11, df = 2, p-value < 2.2e-16
+
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> na_values <- c("880", "600", "110", "120")
+> ADR_master <- ADR_master %>% mutate(new_AGE = ifelse(is.na(AGE_10_1) | 
++ AGE_10_1 %in% na_values, "unknown", as.character(AGE_10_1)))
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> total_counts <- ADR_master %>% group_by(new_AGE, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(new_AGE, Drug_Type, Percentage)
+> View(combined_data)
+> mean_sd_age <- total_counts %>% group_by(Drug_Type, new_AGE) %>% 
++ summarise(Mean = mean(Total), SD = sd(Total)) %>% ungroup()
+> print(mean_sd_age)
+# A tibble: 24 × 4
+   Drug_Type   new_AGE   Mean    SD
+   <chr>       <chr>    <dbl> <dbl>
+ 1 Non-PREPARE 0        32134    NA
+ 2 Non-PREPARE 10       41686    NA
+ 3 Non-PREPARE 100        199    NA
+ 4 Non-PREPARE 20       92931    NA
+ 5 Non-PREPARE 30      119054    NA
+ 6 Non-PREPARE 40      133466    NA
+ 7 Non-PREPARE 50      159143    NA
+ 8 Non-PREPARE 60      166998    NA
+ 9 Non-PREPARE 70      140053    NA
+10 Non-PREPARE 80       63449    NA
+# ℹ 14 more rows
+# ℹ Use `print(n = ...)` to see more rows
+> View(mean_sd_age)
+> prepare_data <- total_counts %>% filter(Drug_Type == "PREPARE") %>% 
++ pull(new_AGE)
+> non_prepare_data <- total_counts %>% filter(Drug_Type == "Non-PREPARE") %>% 
++ pull(new_AGE)
+> prepare_mean <- mean(prepare_data, na.rm = TRUE)
+> prepare_sd <- sd(prepare_data, na.rm = TRUE)
+> non_prepare_mean <- mean(non_prepare_data, na.rm = TRUE)
+> non_prepare_sd <- sd(non_prepare_data, na.rm = TRUE)
+> print(prepare_sd)
+[1] 33.16625
+> total_counts <- ADR_master %>% filter(new_AGE != "unknown") %>% 
++ group_by(SEX_1, PREPARE_drugs) %>% summarise(Total = n(), 
++ .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> contingency_table <- table(ADR_master$SEX_1, ADR_master$PREPARE_drugs)
+> print(contingency_table)
+         
+               0      1
+  Female  704949  64903
+  Male    466365  45876
+  Unknown  58609   5010
+> filtered_ADR_master <- ADR_master[ADR_master$SEX_1 != "Unknown", 
++ ]
+> contingency_table <- table(filtered_ADR_master$SEX_1, filtered_ADR_master$PREPARE_drugs)
+> print(contingency_table)
+        
+              0      1
+  Female 704949  64903
+  Male   466365  45876
+> chi_squared_test <- chisq.test(contingency_table)
+> print(chi_squared_test)
+
+	Pearson's Chi-squared test with Yates' continuity correction
+
+data:  contingency_table
+X-squared = 107.48, df = 1, p-value < 2.2e-16
+
+> na_values <- c("880", "600", "110", "120")
+> ADR_master <- ADR_master %>% mutate(new_AGE = ifelse(is.na(AGE_10_1) | 
++ AGE_10_1 %in% na_values, "unknown", as.character(AGE_10_1)))
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> total_counts <- ADR_master %>% group_by(new_AGE, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(new_AGE, Drug_Type, Percentage)
+> View(total_counts)
+> filtered_ADR_master <- ADR_master %>% filter(!is.na(AGE_10_1) & 
++ !AGE_10_1 %in% na_values) %>% mutate(new_AGE = as.numeric(AGE_10_1))
+> prepare_mean_age <- filtered_ADR_master %>% filter(PREPARE_drugs == 
++ 1) %>% summarise(mean_age = mean(new_AGE)) %>% pull(mean_age)
+> non_prepare_mean_age <- filtered_ADR_master %>% filter(PREPARE_drugs == 
++ 0) %>% summarise(mean_age = mean(new_AGE)) %>% pull(mean_age)
+> t_test_result <- t.test(filtered_ADR_master$new_AGE ~ filtered_ADR_master$PREPARE_drugs)
+> print(t_test_result)
+
+	Welch Two Sample t-test
+
+data:  filtered_ADR_master$new_AGE by filtered_ADR_master$PREPARE_drugs
+t = -3.9612, df = 119504, p-value = 7.462e-05
+alternative hypothesis: true difference in means between group 0 and group 1 is not equal to 0
+95 percent confidence interval:
+ -0.4106991 -0.1388065
+sample estimates:
+mean in group 0 mean in group 1 
+       46.87383        47.14858 
+
+> prepare_sd_age <- filtered_ADR_master %>% filter(PREPARE_drugs == 
++ 1) %>% summarise(sd_age = sd(new_AGE)) %>% pull(sd_age)
+> prepare_sd_age <- filtered_ADR_master %>% filter(PREPARE_drugs == 
++ 1) %>% summarise(sd_age = sd(new_AGE)) %>% pull(sd_age)
+> non_prepare_sd_age <- filtered_ADR_master %>% filter(PREPARE_drugs == 
++ 0) %>% summarise(sd_age = sd(new_AGE)) %>% pull(sd_age)
+> print(prepare_sd_age)
+[1] 20.59297
+> print(non_prepare_sd_age)
+[1] 21.13577
