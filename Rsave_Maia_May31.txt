@@ -1,0 +1,52 @@
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C9_PREPARE)
+> ADR_master$RECVD_YEAR_1 <- as.numeric(as.character(ADR_master$RECVD_YEAR_1))
+> ADR_master$Decade <- (ADR_master$RECVD_YEAR_1%/%10) * 10
+> library(dplyr)
+> ADR_master <- ADR_master %>% mutate(both_report = case_when(HCP_YN_1 == 
++ "Y" & CONSUMER_YN_1 == "Y" ~ "Y", HCP_YN_1 == "N" & CONSUMER_YN_1 == 
++ "N" ~ "N", TRUE ~ "Other"))
+> filtered_df <- ADR_master[ADR_master$both_report != "Y", ]
+> count_Y_CONSUMER <- sum(filtered_df$CONSUMER_YN_1 == "Y")
+> count_Y_HCP <- sum(filtered_df$HCP_YN_1 == "Y")
+> total_rows <- nrow(ADR_master)
+> count_Y_HCP <- sum(filtered_df$HCP_YN_1 == "Y")/total_rows * 
++ 100
+> count_Y_CONSUMER <- sum(filtered_df$HCP_YN_1 == "Y")/total_rows * 
++ 100
+> count_Y_CONSUMER <- sum(filtered_df$CONSUMER_YN_1 == "Y")/total_rows * 
++ 100
+> count_Y_both_report <- sum(ADR_master$both_report == "Y")/total_rows * 
++ 100
+> "PHENPROCOUMON" %in% ADR_master$DRUG
+[1] FALSE
+> "WARFARIN" %in% ADR_master$DRUG
+[1] TRUE
+> sum(ADR_master$DRUG == "WARFARIN")
+[1] 5169
+> sum(ADR_master$DRUG == "PHENPROCOUMON")
+[1] 0
+> sum(ADR_master$SENDER_TYPE_1 == "Indirect")
+[1] 442387
+> sum(ADR_master$SENDER_TYPE_1 == "Direct")
+[1] 903325
