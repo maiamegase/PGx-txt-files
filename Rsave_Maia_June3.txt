@@ -1,0 +1,1109 @@
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C9_PREPARE)
+> ADR_master$RECVD_YEAR_1 <- as.numeric(as.character(ADR_master$RECVD_YEAR_1))
+> ADR_master$Decade <- (ADR_master$RECVD_YEAR_1%/%10) * 10
+> library(dplyr)
+> CYP2D6_drugs <- PREPARE_drugs$CYP2D6_PREPARE
+> ADR_master <- ADR_master %>% mutate(CYP2D6_drugs = ifelse(DRUG %in% 
++ CYP2D6_drugs, DRUG, "no"))
+> CYP2C19_drugs <- PREPARE_drugs$CYP2C19_PREPARE
+> ADR_master <- ADR_master %>% mutate(CYP2C19_drugs = ifelse(DRUG %in% 
++ CYP2C19_drugs, DRUG, "no"))
+> View(PREPARE_drugs)
+> SLCO1B1_drugs <- PREPARE_drugs$SLCO1B1_PREPARE
+> ADR_master <- ADR_master %>% mutate(SLCO1B1_drugs = ifelse(DRUG %in% 
++ SLCO1B1_drugs, DRUG, "no"))
+> sum(ADR_master$CYP2D6_drugs == "FLECAINIDE")
+[1] 851
+> total_reports_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% count(Decade, name = "Total_Count")
+> PREPARE_drugs_names <- PREPARE_drugs$PREPARE_Drugs
+> ADR_master <- ADR_master %>% mutate(PREPARE_drugs_names = ifelse(DRUG %in% 
++ PREPARE_drugs_names, DRUG, "no"))
+> sum(ADR_master$PREPARE_drugs_names == "no")
+[1] 1229923
+> drug_counts <- ADR_master %>% group_by(DRUG) %>% summarise(total_count = n()) %>% 
++ arrange(desc(total_count))
+> View(drug_counts)
+> drug_counts <- ADR_master %>% filter(DRUG %in% PREPARE_drugs_names) %>% 
++ group_by(DRUG) %>% summarise(total_count = n()) %>% arrange(desc(total_count))
+> View(drug_counts)
+> count_total_PREPARE_ADRs <- sum(ADR_master$PREPARE_drugs == 1)
+> drug_counts <- drug_counts %>% mutate(percentage = (total_count/count_total_PREPARE_ADRs) * 
++ 100)
+> View(drug_counts)
+> library(dplyr)
+> drug_counts <- ADR_master %>% filter(DRUG %in% PREPARE_drugs_names) %>% 
++ group_by(DRUG) %>% summarise(total_count = n()) %>% arrange(desc(total_count))
+> count_total_PREPARE_ADRs <- sum(ADR_master$PREPARE_drugs == 1)
+> drug_counts <- drug_counts %>% mutate(percentage = (total_count/count_total_PREPARE_ADRs) * 
++ 100)
+> View(drug_counts)
+> library(ggplot2)
+> library(tidyr)
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> library(readr)
+> PREPARE_drugs <- read_csv("PREPARE_drugs.csv")
+> View(PREPARE_drugs)
+> library(readr)
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), vjust = -0.3, size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), vjust = 1.5, size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.5, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.5, vjust = 1.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.5, vjust = 1, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.5, vjust = 2, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.5, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 1, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.6, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.4, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 1, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.9, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.9, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.8, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), angle = 90, hjust = 0.7, vjust = 0.5, 
++ 
++ size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> CPRD_Data$legend_label <- paste(CPRD_Data$Drug, "\n(", CPRD_Data$Gene, 
++ ")", sep = "")
+> ggplot(CPRD_Data, aes(x = `CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene", labels = CPRD_Data$legend_label) + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> CPRD_Data$legend_label <- paste(CPRD_Data$Drug, "\n(", CPRD_Data$Gene, 
++ ")", sep = "")
+> ggplot(CPRD_Data, aes(x = `% CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene", labels = CPRD_Data$legend_label) + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> CPRD_Data$legend_label <- paste(CPRD_Data$Drug, "\n(", CPRD_Data$Gene, 
++ ")", sep = "")
+> ggplot(CPRD_Data, aes(x = `% CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene", labels = CPRD_Data$legend_label) + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = `% CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ `% CPRD Prescribing Prevalence`), y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> warnings()
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 1.74PB/s                                                                                                                                           indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 2.94PB/s                                                                                               indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 2.45PB/s                                                                                               indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.14PB/s                                                                                               indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.46PB/s                                                                                               indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 4.79PB/s                                                                                               indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 4.25PB/s                                                                                               indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.83PB/s                                                                                               indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 2.21PB/s                                                                                               indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 4.10PB/s                                                                                                  Warning messages:
+1: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+2: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+3: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+4: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+5: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+6: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+7: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+8: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+9: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+10: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+11: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+12: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+13: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+14: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+15: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+16: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+17: In mean.default(X[[i]], ...) :
+  argument is not numeric or logical: returning NA
+> summary(CPRD_Data)
+     Drug           % CPRD Prescribing Prevalence     Gene           % YC ADR Reports  
+ Length:25          Length:25                     Length:25          Length:25         
+ Class :character   Class :character              Class :character   Class :character  
+ Mode  :character   Mode  :character              Mode  :character   Mode  :character  
+ legend_label      
+ Length:25         
+ Class :character  
+ Mode  :character  
+> CPRD_Data$`% CPRD Prescribing Prevalence` <- as.numeric(as.character(CPRD_Data$`% CPRD Prescribing Prevalence`))
+> CPRD_Data$`% YC ADR Reports` <- as.numeric(as.character(CPRD_Data$`% YC ADR Reports`))
+> any(is.na(CPRD_Data$`% CPRD Prescribing Prevalence`))
+[1] TRUE
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> ggplot(CPRD_Data, aes(x = `% CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ geom_text(aes(label = Drug), vjust = -0.3, size = 3.5, position = position_dodge(width = 0.9)) + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ `% CPRD Prescribing Prevalence`), y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "Medication Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ `% CPRD Prescribing Prevalence`), y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "% of Prescribing Prevalence vs % YC ADR Reports", 
++ 
++ x = "% of Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = Drug, y = `% YC ADR Reports`, fill = Gene)) + 
++ geom_bar(stat = "identity", position = "dodge") + labs(title = "% of Prescribing Prevalence vs % YC ADR Reports", 
++ x = "Drug", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ `% CPRD Prescribing Prevalence`), y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "% of Prescribing Prevalence vs % YC ADR Reports", 
++ 
++ x = "% of Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ `% CPRD Prescribing Prevalence`), y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "
++ % of Prescribing Prevalence vs % YC ADR Reports", 
++ 
++ x = "% of Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = Drug, y = `% YC ADR Reports`, fill = Gene)) + 
++ geom_bar(stat = "identity", position = "dodge") + labs(title = "% of Prescribing Prevalence vs % YC ADR Reports", 
++ x = "Drug", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1), plot.title = element_text(hjust = 0.5))
+> ggplot(CPRD_Data, aes(x = `% CPRD Prescribing Prevalence`, y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "% of Drug Prescribing Prevalence vs % YC ADR", 
++ 
++ x = "CPRD Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ `% CPRD Prescribing Prevalence`), y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "
++ % of Prescribing Prevalence vs % YC ADR Reports", 
++ 
++ x = "% of Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ `% CPRD Prescribing Prevalence`), y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "
++ % of Prescribing Prevalence vs % YC ADR Reports", 
++ 
++ x = "% of Prescribing Prevalence", y = "% YC ADR (PREPARE ADR as denominator)") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ `% CPRD Prescribing Prevalence`), y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "
++ % of Prescribing Prevalence vs % YC ADR Reports", 
++ 
++ x = "% of Prescribing Prevalence", y = "% YC ADR Reports") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ `% CPRD Prescribing Prevalence`), y = `% YC ADR Reports`, 
++ fill = Gene)) + geom_bar(stat = "identity", position = "dodge") + 
++ labs(title = "% of Drug Prescribing Prevalence vs % YC ADR Reports", 
++ 
++ x = "% of Prescribing Prevalence", y = "% YC ADR Reports") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ADR_master$PREPARE_drugs <- as.numeric(as.character(ADR_master$PREPARE_drugs))
+> total_counts <- ADR_master %>% group_by(SEX_1, PREPARE_drugs) %>% 
++ summarise(Total = n(), .groups = "drop") %>% mutate(Drug_Type = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "Non-PREPARE"))
+> total_drug_counts <- total_counts %>% group_by(Drug_Type) %>% 
++ summarise(Overall_Total = sum(Total), .groups = "drop")
+> combined_data <- total_counts %>% left_join(total_drug_counts, 
++ by = "Drug_Type") %>% mutate(Percentage = (Total/Overall_Total) * 
++ 100) %>% select(SEX_1, Drug_Type, Percentage)
+> filtered_ADR_master <- ADR_master[ADR_master$SEX_1 != "Unknown", 
++ ]
+> contingency_table <- table(filtered_ADR_master$SEX_1, filtered_ADR_master$PREPARE_drugs)
+> print(contingency_table)
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.48PB/s                                                                                                          
+              0      1
+  Female 704949  64903
+  Male   466365  45876
+> drug_counts <- ADR_master %>% filter(DRUG %in% PREPARE_drugs_names) %>% 
++ group_by(DRUG) %>% summarise(total_count = n()) %>% arrange(desc(total_count))
+> drug_counts <- ADR_master %>% filter(DRUG %in% PREPARE_drugs_names) %>% 
++ group_by(DRUG) %>% summarise(total_count = n())
+> View(drug_counts)
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> for (i in 1:nrow(CPRD_Data)) {
++ contingency_table <- matrix(c(CPRD_Data$`Number of CPRD Prescribing Prevalence`[i], 
++ 
++ CPRD_Data$`Number of YC ADR Reports`[i]), nrow = 1, byrow = TRUE)
++ chi_square_result <- chisq.test(contingency_table)
++ print(chi_square_result)
++ }
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 2.89PB/s                                                                                              
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 184.42, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 124520, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 34153, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1725.9, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1100.9, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 8024.1, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 7066.6, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 18723, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1691, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 995.92, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 924.95, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 3.2909, df = 1, p-value = 0.06966
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 47449, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 659.41, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 649.95, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 722.68, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 2376, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 24.564, df = 1, p-value = 7.187e-07
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 166.23, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1464.4, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 2550.6, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 16.892, df = 1, p-value = 3.957e-05
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 72195, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 254.61, df = 1, p-value < 2.2e-16
+
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 938.32, df = 1, p-value < 2.2e-16
+
+> View(chi_square_result)
+> View(contingency_table)
+> for (i in 1:nrow(CPRD_Data)) {
++ drug_name <- CPRD_Data$Drug[i]
++ contingency_table <- matrix(c(CPRD_Data$`Number of CPRD Prescribing Prevalence`[i], 
++ 
++ CPRD_Data$`Number of YC ADR Reports`[i]), nrow = 1, byrow = TRUE)
++ chi_square_result <- chisq.test(contingency_table)
++ cat("Drug:", drug_name, "\n")
++ print(chi_square_result)
++ cat("\n")
++ }
+Drug: FLECAINIDE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 184.42, df = 1, p-value < 2.2e-16
+
+
+Drug: CODEINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 124520, df = 1, p-value < 2.2e-16
+
+
+Drug: TRAMADOL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 34153, df = 1, p-value < 2.2e-16
+
+
+Drug: FLUOROURACIL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1725.9, df = 1, p-value < 2.2e-16
+
+
+Drug: TAMOXIFEN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1100.9, df = 1, p-value < 2.2e-16
+
+
+Drug: CLOPIDOGREL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 8024.1, df = 1, p-value < 2.2e-16
+
+
+Drug: WARFARIN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 7066.6, df = 1, p-value < 2.2e-16
+
+
+Drug: CITALOPRAM 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 18723, df = 1, p-value < 2.2e-16
+
+
+Drug: ESCITALOPRAM 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1691, df = 1, p-value < 2.2e-16
+
+
+Drug: PAROXETINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 995.92, df = 1, p-value < 2.2e-16
+
+
+Drug: SERTRALINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 924.95, df = 1, p-value < 2.2e-16
+
+
+Drug: VENLAFAXINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 3.2909, df = 1, p-value = 0.06966
+
+
+Drug: AMITRIPTYLINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 47449, df = 1, p-value < 2.2e-16
+
+
+Drug: CLOMIPRAMINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 659.41, df = 1, p-value < 2.2e-16
+
+
+Drug: DOXEPIN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 649.95, df = 1, p-value < 2.2e-16
+
+
+Drug: IMIPRAMINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 722.68, df = 1, p-value < 2.2e-16
+
+
+Drug: NORTRIPTYLINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 2376, df = 1, p-value < 2.2e-16
+
+
+Drug: PHENYTOIN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 24.564, df = 1, p-value = 7.187e-07
+
+
+Drug: CARBAMAZEPINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 166.23, df = 1, p-value < 2.2e-16
+
+
+Drug: METOPROLOL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1464.4, df = 1, p-value < 2.2e-16
+
+
+Drug: ARIPIPRAZOLE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 2550.6, df = 1, p-value < 2.2e-16
+
+
+Drug: HALOPERIDOL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 16.892, df = 1, p-value = 3.957e-05
+
+
+Drug: SIMVASTATIN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 72195, df = 1, p-value < 2.2e-16
+
+
+Drug: AZATHIOPRINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 254.61, df = 1, p-value < 2.2e-16
+
+
+Drug: TACROLIMUS 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 938.32, df = 1, p-value < 2.2e-16
+
+
+> View(PREPARE_drugs)
+> gene_columns <- grep("_PREPARE$", names(PREPARE_drugs), value = TRUE)
+> gene_columns <- setdiff(gene_columns, c("PREPARE_Drugs", "OTHER_PREPARE"))
+> ADR_master$RECVD_YEAR_1 <- as.numeric(as.character(ADR_master$RECVD_YEAR_1))
+> ADR_master$Decade <- (ADR_master$RECVD_YEAR_1%/%10) * 10
+> gene_columns <- grep("_PREPARE$", names(PREPARE_drugs), value = TRUE)
+> gene_columns <- setdiff(gene_columns, c("PREPARE_Drugs", "OTHER_PREPARE"))
+> reports_per_gene_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade) %>% summarise(across(all_of(gene_columns), 
++ sum, na.rm = TRUE), .groups = "drop")
+> gene_columns <- grep("_PREPARE$", names(ADR_master), value = TRUE)
+> gene_columns <- setdiff(gene_columns, c("PREPARE_Drugs", "Other_PREPARE"))
+> reports_per_gene_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade) %>% summarise(across(all_of(gene_columns), 
++ ~sum(.x, na.rm = TRUE)), .groups = "drop")
+> total_reports_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade) %>% summarise(n = n(), .groups = "drop")
+> percentage_per_gene_per_decade <- reports_per_gene_per_decade %>% 
++ left_join(total_reports_per_decade, by = "Decade") %>% mutate(across(all_of(gene_columns), 
++ ~(.x/n) * 100, .names = "{.col
++ }_pct")) %>% select(-n) %>% 
++ pivot_longer(cols = ends_with("_pct"), names_pattern = "(.*)_pct", 
++ 
++ names_to = "Gene", values_to = "Percentage")
+> View(percentage_per_gene_per_decade)
+> gene_columns <- grep("_PREPARE$", names(ADR_master), value = TRUE)
+> gene_columns <- setdiff(gene_columns, c("PREPARE_Drugs", "OTHER_PREPARE"))
+> reports_per_gene_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade) %>% summarise(across(all_of(gene_columns), 
++ ~sum(.x, na.rm = TRUE)), .groups = "drop")
+> total_reports_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade) %>% summarise(n = n(), .groups = "drop")
+> percentage_per_gene_per_decade <- reports_per_gene_per_decade %>% 
++ left_join(total_reports_per_decade, by = "Decade") %>% mutate(across(all_of(gene_columns), 
++ ~(.x/n) * 100, .names = "{.col
++ }_pct")) %>% select(-n) %>% 
++ pivot_longer(cols = ends_with("_pct"), names_pattern = "(.*)_pct", 
++ 
++ names_to = "Gene", values_to = "Percentage")
+> View(percentage_per_gene_per_decade)
+> my_colors <- c("#8dd3c7", "#ffffb3", "#bebada", "#80b1d3", "#fdb462", 
++ "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f", 
++ "#a6cee3")
+> plot_stacked_bar <- ggplot(percentage_per_gene_per_decade, aes(x = factor(Decade), 
++ y = Percentage, fill = Gene)) + geom_bar(stat = "identity") + 
++ labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE drugs and their associated genes per Decade") + 
++ theme_minimal() + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar)
+> total_reports_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade) %>% summarise(n = n(), .groups = "drop")
+> View(total_reports_per_decade)
+> total_reports_per_decade_n <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% count(Decade)
+> View(total_reports_per_decade)
+> View(total_reports_per_decade_n)
+> View(total_reports_per_decade)
+> View(total_reports_per_decade_n)
+> any(is.na(ADR_master$CYP2D6_drugs))
+[1] FALSE
+> total_reports_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% count(Decade, name = "Total_Count")
+> reports_per_SLCO1B1_drug_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade, SLCO1B1_drugs) %>% summarise(Count = n(), 
++ .groups = "drop") %>% filter(SLCO1B1_drugs != "no") %>% ungroup()
+> for (i in 1:nrow(CPRD_Data)) {
++ drug_name <- CPRD_Data$Drug[i]
++ contingency_table <- matrix(c(CPRD_Data$`Number of CPRD Prescribing Prevalence`[i], 
++ 
++ CPRD_Data$`Number of YC ADR Reports`[i]), nrow = 1, byrow = TRUE)
++ chi_square_result <- chisq.test(contingency_table)
++ cat("Drug:", drug_name, "\n")
++ print(chi_square_result)
++ cat("\n")
++ }
+Drug: FLECAINIDE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 184.42, df = 1, p-value < 2.2e-16
+
+
+Drug: CODEINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 124520, df = 1, p-value < 2.2e-16
+
+
+Drug: TRAMADOL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 34153, df = 1, p-value < 2.2e-16
+
+
+Drug: FLUOROURACIL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1725.9, df = 1, p-value < 2.2e-16
+
+
+Drug: TAMOXIFEN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1100.9, df = 1, p-value < 2.2e-16
+
+
+Drug: CLOPIDOGREL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 8024.1, df = 1, p-value < 2.2e-16
+
+
+Drug: WARFARIN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 7066.6, df = 1, p-value < 2.2e-16
+
+
+Drug: CITALOPRAM 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 18723, df = 1, p-value < 2.2e-16
+
+
+Drug: ESCITALOPRAM 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1691, df = 1, p-value < 2.2e-16
+
+
+Drug: PAROXETINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 995.92, df = 1, p-value < 2.2e-16
+
+
+Drug: SERTRALINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 924.95, df = 1, p-value < 2.2e-16
+
+
+Drug: VENLAFAXINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 3.2909, df = 1, p-value = 0.06966
+
+
+Drug: AMITRIPTYLINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 47449, df = 1, p-value < 2.2e-16
+
+
+Drug: CLOMIPRAMINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 659.41, df = 1, p-value < 2.2e-16
+
+
+Drug: DOXEPIN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 649.95, df = 1, p-value < 2.2e-16
+
+
+Drug: IMIPRAMINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 722.68, df = 1, p-value < 2.2e-16
+
+
+Drug: NORTRIPTYLINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 2376, df = 1, p-value < 2.2e-16
+
+
+Drug: PHENYTOIN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 24.564, df = 1, p-value = 7.187e-07
+
+
+Drug: CARBAMAZEPINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 166.23, df = 1, p-value < 2.2e-16
+
+
+Drug: METOPROLOL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 1464.4, df = 1, p-value < 2.2e-16
+
+
+Drug: ARIPIPRAZOLE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 2550.6, df = 1, p-value < 2.2e-16
+
+
+Drug: HALOPERIDOL 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 16.892, df = 1, p-value = 3.957e-05
+
+
+Drug: SIMVASTATIN 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 72195, df = 1, p-value < 2.2e-16
+
+
+Drug: AZATHIOPRINE 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 254.61, df = 1, p-value < 2.2e-16
+
+
+Drug: TACROLIMUS 
+
+	Chi-squared test for given probabilities
+
+data:  contingency_table
+X-squared = 938.32, df = 1, p-value < 2.2e-16
+
+

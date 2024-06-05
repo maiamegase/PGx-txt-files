@@ -1,0 +1,57 @@
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C9_PREPARE)
+> ADR_master$RECVD_YEAR_1 <- as.numeric(as.character(ADR_master$RECVD_YEAR_1))
+> ADR_master$Decade <- (ADR_master$RECVD_YEAR_1%/%10) * 10
+> library(dplyr)
+> library(tidyr)
+> library(ggplot2)
+> ADR_master <- ADR_master %>% mutate(both_report = case_when(HCP_YN_1 == 
++ "Y" & CONSUMER_YN_1 == "Y" ~ "Y", HCP_YN_1 == "N" & CONSUMER_YN_1 == 
++ "N" ~ "N", TRUE ~ "Other"))
+> filtered_df <- ADR_master[ADR_master$both_report != "Y", ]
+> count_Y_CONSUMER <- sum(filtered_df$CONSUMER_YN_1 == "Y")
+> prepare_count_Y_CONSUMER <- sum(ADR_master$CONSUMER_YN_1[ADR_master$PREPARE_drugs == 
++ 1 & ADR_master$both_report != "Y"] == "Y")
+> non_prepare_count_Y_CONSUMER <- sum(ADR_master$CONSUMER_YN_1[ADR_master$PREPARE_drugs == 
++ 0 & ADR_master$both_report != "Y"] == "Y")
+> count_Y_HCP <- sum(filtered_df$HCP_YN_1 == "Y")
+> prepare_count_Y_hcp <- sum(ADR_master$HCP_YN_1[ADR_master$PREPARE_drugs == 
++ 1 & ADR_master$both_report != "Y"] == "Y")
+> non_prepare_count_Y_hcp <- sum(ADR_master$HCP_YN_1[ADR_master$PREPARE_drugs == 
++ 0 & ADR_master$both_report != "Y"] == "Y")
+> prepare_count_Y_both_report <- sum(ADR_master$both_report[ADR_master$PREPARE_drugs == 
++ 1] == "Y")
+> sum(ADR_master$both_report == "Y")
+[1] 49154
+> non_prepare_count_Y_both_report <- sum(ADR_master$both_report[ADR_master$PREPARE_drugs == 
++ 0] == "Y")
+> total_prepare_reports <- sum(ADR_master$PREPARE_drugs == 1)
+> total_non_prepare_reports <- sum(ADR_master$PREPARE_drugs == 
++ 0)
+> count_matrix <- matrix(c(prepare_count_Y_CONSUMER, non_prepare_count_Y_CONSUMER, 
++ prepare_count_Y_hcp, non_prepare_count_Y_hcp, prepare_count_Y_both_report, 
++ non_prepare_count_Y_both_report), nrow = 3, byrow = TRUE)
+> View(count_matrix)
+> colnames(count_matrix) <- c("Prepare", "Non-Prepare")
+> rownames(count_matrix) <- c("CONSUMER_Y", "HCP_Y", "Both_Report_Y")
+> View(count_matrix)
