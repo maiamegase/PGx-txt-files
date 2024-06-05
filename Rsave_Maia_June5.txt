@@ -1,0 +1,184 @@
+> library(ggplot2)
+> library(dplyr)
+> library(tidyr)
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C9_PREPARE)
+> ADR_master$RECVD_YEAR_1 <- as.numeric(as.character(ADR_master$RECVD_YEAR_1))
+> ADR_master$Decade <- (ADR_master$RECVD_YEAR_1%/%10) * 10
+> column_names <- grep("^NONSERIOUS_SERIOUS_FATAL_NSF_", names(ADR_master), 
++ value = TRUE)
+> ADR_master <- ADR_master %>% mutate(most_severe_outcome = apply(select(., 
++ all_of(column_names)), 1, function(row) {
++ if (all(is.na(row) | row == FALSE)) {
++ 
++ "Unknown"
++ 
++ }
++ else {
++ 
++ rank <- c(N = 1, S = 2, F = 3)
++ 
++ non_na_values <- na.omit(row)
++ 
++ non_false_values <- non_na_values[non_na_values != FALSE]
++ 
++ max_rank <- max(rank[non_false_values], na.rm = TRUE)
++ 
++ names(rank)[rank == max_rank]
++ 
++ }
++ }))
+> total_counts <- ADR_master %>% group_by(PREPARE_drugs) %>% summarise(total_count = n())
+> severity_counts <- ADR_master %>% group_by(PREPARE_drugs, most_severe_outcome) %>% 
++ summarise(count = n()) %>% pivot_wider(names_from = most_severe_outcome, 
++ values_from = count, values_fill = list(count = 0))
+> severity_counts <- severity_counts %>% mutate(N = ifelse(is.na(N), 
++ 0, N), S = ifelse(is.na(S), 0, S), F = ifelse(is.na(F), 0, 
++ F), Unknown = ifelse(is.na(Unknown), 0, Unknown))
+> percentage_data <- severity_counts %>% left_join(total_counts, 
++ by = "PREPARE_drugs") %>% mutate(NonSerious = (N/total_count) * 
++ 100, Serious = (S/total_count) * 100, Fatal = (F/total_count) * 
++ 100, Unknown_percentage = (Unknown/total_count) * 100) %>% 
++ select(PREPARE_drugs, NonSerious, Serious, Fatal, Unknown_percentage)
+> percentage_data <- percentage_data %>% mutate(PREPARE_drugs = ifelse(PREPARE_drugs == 
++ 1, "PREPARE", "NonPREPARE"))
+> long_data <- percentage_data %>% pivot_longer(cols = c(NonSerious, 
++ Serious, Fatal), names_to = "Severity", values_to = "Percentage")
+> long_data$Severity <- factor(long_data$Severity, levels = c("Fatal", 
++ "Serious", "NonSerious"))
+> custom_colors <- c(NonSerious = "#8dd3c7", Serious = "#b3de69", 
++ Fatal = "#ffed6f")
+> ggplot(long_data, aes(x = PREPARE_drugs, y = Percentage, fill = Severity)) + 
++ geom_bar(stat = "identity", width = 0.5) + labs(title = "Comparing the Percentage of Severity in PREPARE and Non-PREPARE  ADR Reports", 
++ x = "Drug Type", y = "Percentage of ADR Reports (%)", fill = "Severity") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1)) + scale_fill_manual(values = custom_colors)
+> View(percentage_data)
+> library(readr)
+> Prescriber_Category <- read_csv("Prescriber_Category.csv")
+> View(Prescriber_Category)
+> library(readr)
+> Prescriber_Category <- read_csv("Prescriber_Category.csv")
+> View(Prescriber_Category)
+> library(readr)
+> Prescriber_Category <- read_csv("Prescriber_Category.csv")
+> View(Prescriber_Category)
+> library(readr)
+> Prescriber_Category <- read_csv("Prescriber_Category.csv")
+> View(Prescriber_Category)
+> ADR_master$Cardiovascular <- as.integer(ADR_master$DRUG %in% 
++ Prescriber_Category$Cardiovascular)
+> ADR_master$Analgesics <- as.integer(ADR_master$DRUG %in% Prescriber_Category$Analgesics)
+> ADR_master$Oncology <- as.integer(ADR_master$DRUG %in% Prescriber_Category$Oncology)
+> ADR_master$Psychiatry <- as.integer(ADR_master$DRUG %in% Prescriber_Category$Psychiatry)
+> ADR_master$Neurology <- as.integer(ADR_master$DRUG %in% Prescriber_Category$Neurology)
+> ADR_master$Infectious_Disease <- as.integer(ADR_master$DRUG %in% 
++ Prescriber_Category$Infectious_Disease)
+> ADR_master$Immunosuppressant <- as.integer(ADR_master$DRUG %in% 
++ Prescriber_Category$Immunosuppressant)
+> ADR_master$Gastroenterology <- as.integer(ADR_master$DRUG %in% 
++ Prescriber_Category$Gastroenterology)
+> ADR_master$Rheumatology <- as.integer(ADR_master$DRUG %in% Prescriber_Category$Rheumatology)
+> sum(ADR_master$Cardiovascular == 1)
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 94.45TB/s                                                                                             indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.07PB/s                                                                                             indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.65PB/s                                                                                             indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 2.41PB/s                                                                                             [1] 28279
+> sum(ADR_master$Oncology == 1)
+[1] 5959
+> Total_PREPARE_count <- sum(ADR_master$PREPARE_drugs == 1)
+> categories <- c("Cardiovascular", "Analgesics", "Oncology", "Psychiatry", 
++ "Neurology", "Infectious_Disease", "Immunosuppressant", "Gastroenterology", 
++ "Rheumatology")
+> summary <- ADR_master %>% summarise(across(all_of(categories), 
++ sum)) %>% pivot_longer(cols = everything(), names_to = "Category", 
++ values_to = "Count") %>% mutate(Percentage = (Count/Total_PREPARE_count) * 
++ 100)
+> View(summary)
+> ggplot(summary, aes(x = Percentage, y = Category)) + geom_bar(stat = "identity", 
++ fill = "skyblue") + labs(title = "Percentage of PREPARE Drugs by Category", 
++ x = "Percentage", y = "Category") + theme_minimal()
+> summary <- ADR_master %>% summarise(across(all_of(categories), 
++ sum)) %>% pivot_longer(cols = everything(), names_to = "Prescriber Category", 
++ values_to = "Count") %>% mutate(Percentage = (Count/Total_PREPARE_count) * 
++ 100)
+> summary <- ADR_master %>% summarise(across(all_of(categories), 
++ sum)) %>% pivot_longer(cols = everything(), names_to = "Prescriber_Category", 
++ values_to = "Count") %>% mutate(Percentage = (Count/Total_PREPARE_count) * 
++ 100)
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category)) + 
++ geom_bar(stat = "identity", fill = "skyblue") + labs(title = "Percentage of PREPARE Drugs by Category", 
++ x = "Percentage", y = "Category") + theme_minimal()
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category)) + 
++ geom_bar(stat = "identity", fill = "skyblue") + labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ x = "Percentage of ADR Reports (%)", y = "Prescriber Category") + 
++ theme_minimal()
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category)) + 
++ geom_bar(stat = "identity", fill = "skyblue") + labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ x = "Percentage of PREPARE ADR Reports (%)", y = "Prescriber Category") + 
++ theme_minimal()
+> View(summary)
+> View(PREPARE_drugs)
+> View(summary)
+> write.csv(summary, "prescriber_data.csv", row.names = FALSE)
+> my_colors <- c("#8dd3c7", "#ffffb3", "#bebada", "#80b1d3", "#fdb462", 
++ "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f", 
++ "#a6cee3")
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category)) + 
++ geom_bar(stat = "identity", fill = "skyblue") + labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ x = "Percentage of PREPARE ADR Reports (%)", y = "Prescriber Category") + 
++ theme_minimal()
+> my_colors <- c("#8dd3c7", "#ffffb3", "#bebada", "#80b1d3", "#fdb462", 
++ "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f", 
++ "#a6cee3")
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category, 
++ fill = Prescriber_Category)) + geom_bar(stat = "identity") + 
++ labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ 
++ x = "Percentage of PREPARE ADR Reports (%)", y = "Prescriber Category") + 
++ scale_fill_manual(values = my_colors) + theme_minimal()
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category)) + 
++ geom_bar(stat = "identity", fill = "skyblue") + labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ x = "Percentage of PREPARE ADR Reports (%)", y = "Prescriber Category") + 
++ theme_minimal()
+> sum(ADR_master$DRUG == "AMIKACIN")
+[1] 206
+> View(ADR_master)
+> sum(ADR_master$DRUG == "AMIKACIN")
+[1] 206
+> sum(ADR_master$DRUG == "AZITHROMYCIN")
+[1] 824
+> hlgt_columns <- ADR_master[, grepl("^SOC_ABBREV_", colnames(ADR_master))]
+> all_values <- unlist(hlgt_columns, use.names = FALSE)
+> all_values <- all_values[!is.na(all_values)]
+> term_counts <- table(all_values)
+> most_frequent_term <- names(term_counts)[which.max(term_counts)]
+> most_frequent_count <- max(term_counts)
+> print(paste("Most frequent term:", most_frequent_term))
+[1] "Most frequent term: Gastr"
+> print(paste("Count:", most_frequent_count))
+[1] "Count: 381741"
+> print(term_counts)
+all_values
+ Blood   Card   Cong    Ear   Endo    Eye  Gastr  Genrl  Hepat  Immun  Infec  Inj&P    Inv  Metab   Musc 
+ 70494  84704  13052  19471   8505  75187 381741 377858  39377  44208 118527 127931 170185  66553 126971 
+ Neopl   Nerv   Preg   Prod  Psych  Renal  Repro   Resp   Skin  SocCi   Surg   Vasc 
+ 30788 368183  20605  20098 233307  54272  45660 143209 340606   4385  12027  78402 
+> View(Prescriber_Category)
