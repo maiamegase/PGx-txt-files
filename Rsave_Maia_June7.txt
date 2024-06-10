@@ -1,0 +1,64 @@
+> load("~/Downloads/MHRA/.RData")
+> library(readr)
+> PREPARE_drugs <- read_csv("PREPARE_drugs.csv")
+> View(PREPARE_drugs)
+> library(readr)
+> Oestrogen_drugs <- read_csv("Oestrogen_drugs.csv")
+> View(Oestrogen_drugs)
+> Oestrogen_terms <- Oestrogen_drugs$Oestrogen_terms
+> library(ggplot2)
+> library(dplyr)
+> library(tidyr)
+> Oestrogen_terms <- Oestrogen_drugs$Oestrogen_terms
+> ADR_master <- ADR_master %>% mutate(Oestrogen_drug_names = ifelse(DRUG %in% 
++ Oestrogen_terms, DRUG, "no"))
+> MEDdra_DVT <- c("Deep vein thrombosis")
+> MEDdra_PE <- c("Pulmonary embolism")
+> contains_DVT <- apply(ADR_master[, grepl("^PT_", names(ADR_master))], 
++ 1, function(x) any(grepl(paste(MEDdra_DVT, collapse = "|"), 
++ 
++ x)))
+> contains_PE <- apply(ADR_master[, grepl("^PT_", names(ADR_master))], 
++ 1, function(x) any(grepl(paste(MEDdra_PE, collapse = "|"), 
++ 
++ x)))
+> ADR_master$DVT <- ifelse(ADR_master$Oestrogen_drug_names == 1 & 
++ contains_DVT, 1, ifelse(ADR_master$Oestrogen_drug_names == 
++ 1 & !contains_DVT, 0, ifelse(ADR_master$Oestrogen_drug_names == 
++ 0, "no", NA)))
+> ADR_master$PE <- ifelse(ADR_master$Oestrogen_drug_names == 1 & 
++ contains_PE, 1, ifelse(ADR_master$Oestrogen_drug_names == 
++ 1 & !contains_PE, 0, ifelse(ADR_master$Oestrogen_drug_names == 
++ 0, "no", NA)))
+> if (!("Oestrogen_other" %in% colnames(ADR_master))) {
++ ADR_master$Oestrogen_other <- "no"
++ }
+> unique_drugs <- unique(ADR_master$Oestrogen_drug_names[ADR_master$Oestrogen_drug_names != 
++ "no"])
+> create_columns <- function(drug_name, status) {
++ column_name <- paste0(drug_name, "_", status)
++ if (!(column_name %in% colnames(ADR_master))) {
++ 
++ ADR_master[[column_name]] <- ifelse(ADR_master$Oestrogen_drug_names == 
++ 
++ 
++ drug_name & ADR_master$DVT == status, status, NA)
++ 
++ }
++ else {
++ 
++ ADR_master[[column_name]] <- ifelse(ADR_master$Oestrogen_drug_names == 
++ 
++ 
++ drug_name & ADR_master$DVT == status, status, ADR_master[[column_name]])
++ 
++ }
++ }
+> for (drug in unique_drugs) {
++ create_columns(drug, 0)
++ create_columns(drug, 1)
++ }
+> ADR_master$Oestrogen_other <- ifelse(ADR_master$Oestrogen_drug_names == 
++ "no", "no", ADR_master$Oestrogen_other)
+> View(Oestrogen_drugs)
+> ADR_master <- ADR_master %>% select(-Oestrogen_other)

@@ -1,0 +1,143 @@
+> library(ggplot2)
+> library(dplyr)
+> library(tidyr)
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C9_PREPARE)
+> ADR_master$RECVD_YEAR_1 <- as.numeric(as.character(ADR_master$RECVD_YEAR_1))
+> ADR_master$Decade <- (ADR_master$RECVD_YEAR_1%/%10) * 10
+> library(readr)
+> prescriber_data <- read_csv("prescriber_data.csv")
+> View(prescriber_data)
+> library(readr)
+> Prescriber_Category <- read_csv("Prescriber_Category.csv")
+> View(Prescriber_Category)
+> prescriber_categories <- c("Cardiovascular", "Oncology", "Psychiatry", 
++ "Neurology", "Infectious_Disease", "Gastroenterology", "Rheumatology", 
++ "Cross_Specialty")
+> for (category in prescriber_categories) {
++ ADR_master[[category]] <- as.integer(ADR_master$DRUG %in% 
++ 
++ Prescriber_Category[[category]])
++ }
+> Total_PREPARE_count <- sum(ADR_master$PREPARE_drugs == 1)
+> summary <- ADR_master %>% summarise(across(all_of(prescriber_categories), 
++ sum)) %>% pivot_longer(cols = everything(), names_to = "Prescriber_Category", 
++ values_to = "Count") %>% mutate(Percentage = (Count/Total_PREPARE_count) * 
++ 100)
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category)) + 
++ geom_bar(stat = "identity", fill = "skyblue") + labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ x = "Percentage of PREPARE ADR Reports (%)", y = "Prescriber Category") + 
++ theme_minimal()
+> View(summary)
+> library(readr)
+> Oestrogen_drugs <- read_csv("Oestrogen_drugs.csv")
+> View(Oestrogen_drugs)
+> ADR_master$Oestrogen_drugs <- as.integer(ADR_master$DRUG %in% 
++ Oestrogen_drugs$Oestrogen_terms)
+> sum(ADR_master$Oestrogen_drugs == 1)
+indexing prescriber_data.csv [===============================================] 35.20MB/s, eta:  0s                                                                                                  indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.19PB/s                                                                                                indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 3.15PB/s                                                                                                [1] 25220
+> View(ADR_master)
+> any(is.na(ADR_master$PT_1))
+[1] FALSE
+> unique_values <- unique(ADR_master$PT_1)
+> MEDdra_terms <- c("Pulmonary embolism", "Deep vein thrombosis")
+> ADR_master <- ADR_master %>% mutate(oestrogen_event = 0)
+> MEDdra_terms <- c("Pulmonary embolism", "Deep vein thrombosis")
+> contains_terms <- apply(ADR_master[, grepl("^PT_", names(ADR_master))], 
++ 1, function(x) any(grepl(paste(MEDdra_terms, collapse = "|"), 
++ 
++ x)))
+> ADR_master$oestrogen_event <- ifelse(contains_terms, 1, 0)
+> sum(ADR_master$oestrogen_event == 1)
+[1] 13159
+> sum(ADR_master$oestrogen_event == 0)
+[1] 1332553
+> ADR_master <- select(ADR_master, -oestrogen_event)
+> MEDdra_terms <- c("Pulmonary embolism", "Deep vein thrombosis")
+> contains_terms <- apply(ADR_master[, grepl("^PT_", names(ADR_master))], 
++ 1, function(x) any(grepl(paste(MEDdra_terms, collapse = "|"), 
++ 
++ x)))
+> ADR_master$oestrogen_event <- ifelse(ADR_master$Oestrogen_drugs == 
++ 1 & contains_terms, 1, ifelse(ADR_master$Oestrogen_drugs == 
++ 1 & !contains_terms, 0, ifelse(ADR_master$Oestrogen_drugs == 
++ 0, "no", NA)))
+> any(is.na(ADR_master$oestrogen_event))
+[1] FALSE
+> sum(ADR_master$oestrogen_event == 1)
+[1] 3484
+> sum(ADR_master$oestrogen_event == 0)
+[1] 21736
+> sum(ADR_master$oestrogen_event == "no")
+[1] 1320492
+> sum(ADR_master$Oestrogen_drugs == 1)
+[1] 25220
+> any(is.na(ADR_master$oestrogen_drugs))
+[1] FALSE
+> any(is.na(ADR_master$oestrogen_event))
+[1] FALSE
+> unique_values <- unique(ADR_master$oestrogen_event)
+> total_oestrogen_drugs <- sum(ADR_master$Oestrogen_drugs == 1)
+> total_event_1 <- sum(ADR_master$oestrogen_event == 1)
+> total_event_0 <- sum(ADR_master$oestrogen_event == 0)
+> percentage_event_1 <- (total_event_1/total_oestrogen_drugs) * 
++ 100
+> percentage_event_0 <- (total_event_0/total_oestrogen_drugs) * 
++ 100
+> percentage_table <- data.frame(Event = c("DVT/PE", "Other"), 
++ Count = c(total_event_1, total_event_0), Percentage = c(percentage_event_1, 
++ 
++ percentage_event_0))
+> View(percentage_table)
+> ggplot(percentage_table, aes(x = Event, y = Percentage, fill = Event)) + 
++ geom_bar(stat = "identity") + labs(title = "Percentage of Oestrogen ADR Reports that are Due to DVT/PE vs Due to Other Events", 
++ x = "Event Type", y = "Percentage (%)") + theme_minimal() + 
++ scale_fill_manual(values = c(`DVT/PE` = "blue", Other = "red"))
+> ggplot(percentage_table, aes(x = Event, y = Percentage, fill = Event)) + 
++ geom_bar(stat = "identity", width = 0.5) + labs(title = "Percentage of Oestrogen ADR Reports that are Due to DVT/PE vs Due to Other Events", 
++ x = "Event Type", y = "Percentage (%)") + theme_minimal() + 
++ scale_fill_manual(values = c(`DVT/PE` = "blue", Other = "red"))
+> write.csv(percentage_table, file = "Oestrogen_data.csv", row.names = FALSE)
+> column_names <- grep("^NONSERIOUS_SERIOUS_FATAL_NSF_", names(ADR_master), 
++ value = TRUE)
+> ADR_master <- ADR_master %>% mutate(most_severe_outcome = apply(select(., 
++ all_of(column_names)), 1, function(row) {
++ if (all(is.na(row) | row == FALSE)) {
++ 
++ "Unknown"
++ 
++ }
++ else {
++ 
++ rank <- c(N = 1, S = 2, F = 3)
++ 
++ non_na_values <- na.omit(row)
++ 
++ non_false_values <- non_na_values[non_na_values != FALSE]
++ 
++ max_rank <- max(rank[non_false_values], na.rm = TRUE)
++ 
++ names(rank)[rank == max_rank]
++ 
++ }
++ }))

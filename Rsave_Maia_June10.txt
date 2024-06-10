@@ -1,0 +1,660 @@
+> library(dplyr)
+> oestrogen_drugs_names <- Oestrogen_drugs$Oestrogen_terms
+> ADR_master <- ADR_master %>% mutate(oestrogen_drugs_names = ifelse(DRUG %in% 
++ oestrogen_drugs_names, DRUG, "no"))
+> MEDdra_DVT <- c("Deep vein thrombosis")
+> MEDdra_PE <- c("Pulmonary embolism")
+> contains_DVT <- apply(ADR_master[, grepl("^PT_", names(ADR_master)), 
++ drop = FALSE], 1, function(x) any(grepl(paste(MEDdra_DVT, 
++ collapse = "|"), x)))
+> contains_PE <- apply(ADR_master[, grepl("^PT_", names(ADR_master)), 
++ drop = FALSE], 1, function(x) any(grepl(paste(MEDdra_PE, 
++ collapse = "|"), x)))
+> ADR_master$ESTRADIOL_DVT <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTRADIOL" & contains_DVT, 1, 0)
+> ADR_master$ESTRADIOL_PE <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTRADIOL" & contains_PE, 1, 0)
+> ADR_master$ESTRADIOL_Other <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTRADIOL" & !contains_PE & !contains_DVT, 1, 0)
+> ADR_master$ETHINYLESTRADIOL_DVT <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ETHINYLESTRADIOL" & contains_DVT, 1, 0)
+> ADR_master$ETHINYLESTRADIOL_PE <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ETHINYLESTRADIOL" & contains_PE, 1, 0)
+> ADR_master$ETHINYLESTRADIOL_Other <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ETHINYLESTRADIOL" & !contains_PE & !contains_DVT, 1, 0)
+> ADR_master$MESTRANOL_DVT <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "MESTRANOL" & contains_DVT, 1, 0)
+> ADR_master$MESTRANOL_PE <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "MESTRANOL" & contains_PE, 1, 0)
+> ADR_master$MESTRANOL_Other <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "MESTRANOL" & !contains_PE & !contains_DVT, 1, 0)
+> ADR_master$ESTROGEN_DVT <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTROGEN" & contains_DVT, 1, 0)
+> ADR_master$ESTROGEN_PE <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTROGEN" & contains_PE, 1, 0)
+> ADR_master$ESTROGEN_Other <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTROGEN" & !contains_PE & !contains_DVT, 1, 0)
+> ADR_master$DIETHYLSTILBESTROL_DVT <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "DIETHYLSTILBESTROL" & contains_DVT, 1, 0)
+> ADR_master$DIETHYLSTILBESTROL_PE <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "DIETHYLSTILBESTROL" & contains_PE, 1, 0)
+> ADR_master$DIETHYLSTILBESTROL_Other <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "DIETHYLSTILBESTROL" & !contains_PE & !contains_DVT, 1, 0)
+> ADR_master$ESTROPIPATE_DVT <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTROPIPATE" & contains_DVT, 1, 0)
+> ADR_master$ESTROPIPATE_PE <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTROPIPATE" & contains_PE, 1, 0)
+> ADR_master$ESTROPIPATE_Other <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTROPIPATE" & !contains_PE & !contains_DVT, 1, 0)
+> ADR_master$ESTRAMUSTINE_DVT <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTRAMUSTINE" & contains_DVT, 1, 0)
+> ADR_master$ESTRAMUSTINE_PE <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTRAMUSTINE" & contains_PE, 1, 0)
+> ADR_master$ESTRAMUSTINE_Other <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTRAMUSTINE" & !contains_PE & !contains_DVT, 1, 0)
+> ADR_master$ESTRONE_DVT <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTRONE" & contains_DVT, 1, 0)
+> ADR_master$ESTRONE_PE <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTRONE" & contains_PE, 1, 0)
+> ADR_master$ESTRONE_Other <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTRONE" & !contains_PE & !contains_DVT, 1, 0)
+> ADR_master$ESTETROL_DVT <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTETROL" & contains_DVT, 1, 0)
+> ADR_master$ESTETROL_PE <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTETROL" & contains_PE, 1, 0)
+> ADR_master$ESTETROL_Other <- ifelse(ADR_master$oestrogen_drugs_names == 
++ "ESTETROL" & !contains_PE & !contains_DVT, 1, 0)
+> library(dplyr)
+> library(tidyr)
+> count_total_oestrogen_ADRs <- sum(ADR_master$oestrogen_drugs_names != 
++ "no")
+> drug_names <- c("ESTRADIOL", "ETHINYLESTRADIOL", "MESTRANOL", 
++ "ESTROGEN", "DIETHYLSTILBESTROL", "ESTROPIPATE", "ESTRAMUSTINE", 
++ "ESTRONE", "ESTETROL")
+> suffixes <- c("_DVT", "_PE", "_Other")
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(NonSerious, Serious, Fatal, Unknown_percentage)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> percentage_data_list <- list()
+> column_names <- grep("^NONSERIOUS_SERIOUS_FATAL_NSF_", names(ADR_master), 
++ value = TRUE)
+> ADR_master <- ADR_master %>% mutate(most_severe_outcome = apply(select(., 
++ all_of(column_names)), 1, function(row) {
++ if (all(is.na(row) | row == FALSE)) {
++ 
++ "Unknown"
++ 
++ }
++ else {
++ 
++ rank <- c(N = 1, S = 2, F = 3)
++ 
++ non_na_values <- na.omit(row)
++ 
++ non_false_values <- non_na_values[non_na_values != FALSE]
++ 
++ max_rank <- max(rank[non_false_values], na.rm = TRUE)
++ 
++ names(rank)[rank == max_rank]
++ 
++ }
++ }))
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(NonSerious, Serious, Fatal, Unknown_percentage)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> percentage_data_list <- list()
+> for (drug in drug_names) {
++ for (suffix in suffixes) {
++ 
++ result <- calculate_severity_and_percentage(ADR_master, 
++ 
++ 
++ drug, suffix, count_total_oestrogen_ADRs)
++ 
++ percentage_data_list <- append(percentage_data_list, 
++ 
++ 
++ list(result))
++ 
++ }
++ }
+> percentage_data <- bind_rows(percentage_data_list)
+> View(percentage_data)
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(count, NonSerious, Serious, Fatal, Unknown_percentage)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> percentage_data_list <- list()
+> count_total_oestrogen_ADRs <- sum(ADR_master$oestrogen_drugs_names != 
++ "no")
+> drug_names <- c("ESTRADIOL", "ETHINYLESTRADIOL", "MESTRANOL", 
++ "ESTROGEN", "DIETHYLSTILBESTROL", "ESTROPIPATE", "ESTRAMUSTINE", 
++ "ESTRONE", "ESTETROL")
+> suffixes <- c("_DVT", "_PE", "_Other")
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(count, NonSerious, Serious, Fatal, Unknown_percentage)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> percentage_data_list <- list()
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(NonSerious, Serious, Fatal, Unknown_percentage)
++ print(severity_counts)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+[1] "Processing: ESTRADIOL _DVT"
+[1] "Processing: ESTRADIOL _DVT"
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(count, NonSerious, Serious, Fatal, Unknown_percentage)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(NonSerious, Serious, Fatal, Unknown_percentage)
++ print(severity_counts)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ print("Function called")
++ print(drug_column)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(NonSerious, Serious, Fatal, Unknown_percentage)
++ print(severity_counts)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ print("Function called")
++ print(drug_column)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(NonSerious, Serious, Fatal, Unknown_percentage)
++ print(severity_counts)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> for (drug in drug_names) {
++ for (suffix in suffixes) {
++ 
++ print(paste("Calling calculate_severity_and_percentage for", 
++ 
++ 
++ drug, suffix))
++ 
++ result <- calculate_severity_and_percentage(ADR_master, 
++ 
++ 
++ drug, suffix, count_total_oestrogen_ADRs)
++ 
++ percentage_data_list <- append(percentage_data_list, 
++ 
++ 
++ list(result))
++ 
++ }
++ }
+[1] "Calling calculate_severity_and_percentage for ESTRADIOL _DVT"
+[1] "Function called"
+[1] "ESTRADIOL_DVT"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1          0   0.404 0.0119                  0
+[1] "Calling calculate_severity_and_percentage for ESTRADIOL _PE"
+[1] "Function called"
+[1] "ESTRADIOL_PE"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1          0   0.492 0.0397                  0
+[1] "Calling calculate_severity_and_percentage for ESTRADIOL _Other"
+[1] "Function called"
+[1] "ESTRADIOL_Other"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1       13.9    13.2 0.0753                  0
+[1] "Calling calculate_severity_and_percentage for ETHINYLESTRADIOL _DVT"
+[1] "Function called"
+[1] "ETHINYLESTRADIOL_DVT"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0    5.33 0.416                  0
+[1] "Calling calculate_severity_and_percentage for ETHINYLESTRADIOL _PE"
+[1] "Function called"
+[1] "ETHINYLESTRADIOL_PE"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0    4.35  1.18                  0
+[1] "Calling calculate_severity_and_percentage for ETHINYLESTRADIOL _Other"
+[1] "Function called"
+[1] "ETHINYLESTRADIOL_Other"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1       13.7    31.6  1.25                  0
+[1] "Calling calculate_severity_and_percentage for MESTRANOL _DVT"
+[1] "Function called"
+[1] "MESTRANOL_DVT"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1          0    1.36 0.0952                  0
+[1] "Calling calculate_severity_and_percentage for MESTRANOL _PE"
+[1] "Function called"
+[1] "MESTRANOL_PE"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0   0.741 0.186                  0
+[1] "Calling calculate_severity_and_percentage for MESTRANOL _Other"
+[1] "Function called"
+[1] "MESTRANOL_Other"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1       2.10    4.64 0.230                  0
+[1] "Calling calculate_severity_and_percentage for ESTROGEN _DVT"
+[1] "Function called"
+[1] "ESTROGEN_DVT"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1          0   0.309 0.0436                  0
+[1] "Calling calculate_severity_and_percentage for ESTROGEN _PE"
+[1] "Function called"
+[1] "ESTROGEN_PE"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1          0   0.305 0.0833                  0
+[1] "Calling calculate_severity_and_percentage for ESTROGEN _Other"
+[1] "Function called"
+[1] "ESTROGEN_Other"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1       1.77    2.90 0.0793                  0
+[1] "Calling calculate_severity_and_percentage for DIETHYLSTILBESTROL _DVT"
+[1] "Function called"
+[1] "DIETHYLSTILBESTROL_DVT"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1          0  0.0476 0.0159                  0
+[1] "Calling calculate_severity_and_percentage for DIETHYLSTILBESTROL _PE"
+[1] "Function called"
+[1] "DIETHYLSTILBESTROL_PE"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1          0  0.0357 0.0476                  0
+[1] "Calling calculate_severity_and_percentage for DIETHYLSTILBESTROL _Other"
+[1] "Function called"
+[1] "DIETHYLSTILBESTROL_Other"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1     0.0397   0.222 0.0515                  0
+[1] "Calling calculate_severity_and_percentage for ESTROPIPATE _DVT"
+[1] "Function called"
+[1] "ESTROPIPATE_DVT"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0  0.0238     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTROPIPATE _PE"
+[1] "Function called"
+[1] "ESTROPIPATE_PE"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0  0.0159     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTROPIPATE _Other"
+[1] "Function called"
+[1] "ESTROPIPATE_Other"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1      0.103   0.135     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTRAMUSTINE _DVT"
+[1] "Function called"
+[1] "ESTRAMUSTINE_DVT"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0       0     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTRAMUSTINE _PE"
+[1] "Function called"
+[1] "ESTRAMUSTINE_PE"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0       0     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTRAMUSTINE _Other"
+[1] "Function called"
+[1] "ESTRAMUSTINE_Other"
+# A tibble: 1 × 4
+  NonSerious Serious  Fatal Unknown_percentage
+       <dbl>   <dbl>  <dbl>              <dbl>
+1     0.0159  0.0872 0.0278                  0
+[1] "Calling calculate_severity_and_percentage for ESTRONE _DVT"
+[1] "Function called"
+[1] "ESTRONE_DVT"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0       0     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTRONE _PE"
+[1] "Function called"
+[1] "ESTRONE_PE"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0       0     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTRONE _Other"
+[1] "Function called"
+[1] "ESTRONE_Other"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1     0.0476  0.0515     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTETROL _DVT"
+[1] "Function called"
+[1] "ESTETROL_DVT"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0       0     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTETROL _PE"
+[1] "Function called"
+[1] "ESTETROL_PE"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0       0     0                  0
+[1] "Calling calculate_severity_and_percentage for ESTETROL _Other"
+[1] "Function called"
+[1] "ESTETROL_Other"
+# A tibble: 1 × 4
+  NonSerious Serious Fatal Unknown_percentage
+       <dbl>   <dbl> <dbl>              <dbl>
+1          0 0.00397     0                  0
+> View(percentage_data)
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(count, NonSerious, Serious, Fatal, Unknown_percentage)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> percentage_data_list <- list()
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(count, NonSerious, Serious, Fatal, Unknown_percentage)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ print(severity_counts)
++ return(severity_counts)
++ }
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100) %>% 
++ 
++ select(count, NonSerious, Serious, Fatal, Unknown_percentage)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ print(severity_counts)
++ return(severity_counts)
++ }
+> percentage_data_list <- list()
+> count_total_oestrogen_ADRs <- sum(ADR_master$oestrogen_drugs_names != 
++ "no")
+> drug_names <- c("ESTRADIOL", "ETHINYLESTRADIOL", "MESTRANOL", 
++ "ESTROGEN", "DIETHYLSTILBESTROL", "ESTROPIPATE", "ESTRAMUSTINE", 
++ "ESTRONE", "ESTETROL")
+> suffixes <- c("_DVT", "_PE", "_Other")
+> calculate_severity_and_percentage <- function(data, drug, suffix, 
++ total_ADRs) {
++ drug_column <- paste0(drug, suffix)
++ severity_counts <- data %>% group_by(most_severe_outcome) %>% 
++ 
++ summarise(count = sum(get(drug_column) == 1, na.rm = TRUE)) %>% 
++ 
++ pivot_wider(names_from = most_severe_outcome, values_from = count, 
++ 
++ 
++ values_fill = list(count = 0)) %>% mutate(NonSerious = (N/total_ADRs) * 
++ 
++ 100, Serious = (S/total_ADRs) * 100, Fatal = (F/total_ADRs) * 
++ 
++ 100, Unknown_percentage = (Unknown/total_ADRs) * 100)
++ severity_counts$total_ADR_count <- sum(severity_counts$NonSerious, 
++ 
++ severity_counts$Serious, severity_counts$Fatal, na.rm = TRUE)
++ severity_counts <- severity_counts %>% mutate(drug = drug, 
++ 
++ suffix = suffix)
++ return(severity_counts)
++ }
+> percentage_data_list <- list()
+> for (drug in drug_names) {
++ for (suffix in suffixes) {
++ 
++ result <- calculate_severity_and_percentage(ADR_master, 
++ 
++ 
++ drug, suffix, count_total_oestrogen_ADRs)
++ 
++ percentage_data_list <- append(percentage_data_list, 
++ 
++ 
++ list(result))
++ 
++ }
++ }
+> percentage_data <- bind_rows(percentage_data_list)
+> View(percentage_data)
+> write.csv(percentage_data, file = "oestrogen_severity.csv", row.names = FALSE)
