@@ -1,0 +1,473 @@
+> load("~/Downloads/MHRA/.RData")
+> library(ggplot2)
+> library(dplyr)
+> library(tidyr)
+> library(tidyr)
+> column_names <- grep("^NONSERIOUS_SERIOUS_FATAL_NSF_", names(ADR_master), 
++ value = TRUE)
+> ADR_master <- ADR_master %>% mutate(most_severe_outcome = apply(select(., 
++ all_of(column_names)), 1, function(row) {
++ if (all(is.na(row) | row == FALSE)) {
++ 
++ "Unknown"
++ 
++ }
++ else {
++ 
++ rank <- c(N = 1, S = 2, F = 3)
++ 
++ non_na_values <- na.omit(row)
++ 
++ non_false_values <- non_na_values[non_na_values != FALSE]
++ 
++ max_rank <- max(rank[non_false_values], na.rm = TRUE)
++ 
++ names(rank)[rank == max_rank]
++ 
++ }
++ }))
+> HLT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> terms_count_table <- data.frame(Term = character(), Count = integer(), 
++ stringsAsFactors = FALSE)
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> drug_names <- unique(ADR_master$psychiatry_drug_names)
+> drug_names <- drug_names[drug_names != "no"]
+> unique_HLT_terms <- unique(unlist(ADR_master[HLT_columns]))
+> drug_hlt_table <- data.frame(matrix(ncol = length(unique_HLT_terms) + 
++ 1, nrow = length(drug_names)))
+> colnames(drug_hlt_table) <- c("Drug", unique_HLT_terms)
+> drug_hlt_table$Drug <- drug_names
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> drug_names <- unique(ADR_master$psychiatry_drug_names)
+> drug_names <- drug_names[drug_names != "no"]
+> unique_HLT_terms <- unique(unlist(ADR_master[HLT_columns]))
+> unique_HLT_terms <- unique_HLT_terms[!is.na(unique_HLT_terms) & 
++ unique_HLT_terms != ""]
+> drug_hlt_table <- data.frame(matrix(ncol = length(unique_HLT_terms) + 
++ 1, nrow = length(drug_names)))
+> colnames(drug_hlt_table) <- c("Drug", unique_HLT_terms)
+> drug_hlt_table$Drug <- drug_names
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> drug_names <- unique(ADR_master$psychiatry_drug_names)
+> drug_names <- drug_names[drug_names != "no"]
+> unique_HLT_terms <- unique(unlist(ADR_master[HLT_columns]))
+> unique_HLT_terms <- unique_HLT_terms[!is.na(unique_HLT_terms) & 
++ unique_HLT_terms != ""]
+> drug_hlt_table <- data.frame(matrix(ncol = length(unique_HLT_terms) + 
++ 1, nrow = length(drug_names)))
+> colnames(drug_hlt_table) <- c("Drug", unique_HLT_terms)
+> drug_hlt_table$Drug <- drug_names
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> drug_names <- unique(ADR_master$psychiatry_drug_names)
+> drug_names <- drug_names[drug_names != "no"]
+> unique_HLT_terms <- unique(unlist(ADR_master[HLT_columns]))
+> unique_HLT_terms <- unique_HLT_terms[!is.na(unique_HLT_terms) & 
++ unique_HLT_terms != ""]
+> drug_hlt_table <- data.frame(Drug = drug_names, matrix(0, nrow = length(drug_names), 
++ ncol = length(unique_HLT_terms)))
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> drug_names <- unique(ADR_master$psychiatry_drug_names)
+> drug_names <- drug_names[drug_names != "no"]
+> unique_HLT_terms <- unique(unlist(ADR_master[HLT_columns]))
+> unique_HLT_terms <- unique_HLT_terms[!is.na(unique_HLT_terms) & 
++ unique_HLT_terms != ""]
+> drug_hlt_table <- data.frame(Drug = drug_names, matrix(0, nrow = length(drug_names), 
++ ncol = length(unique_HLT_terms)), stringsAsFactors = FALSE)
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> library(readr)
+> psychiatry_casestudy <- read_csv("psychiatry_casestudy.csv")
+> View(psychiatry_casestudy)
+> psychiatry_drugs <- psychiatry_casestudy$Psychiatry_2
+> ADR_master <- ADR_master %>% mutate(psychiatry_drug_names = ifelse(DRUG %in% 
++ psychiatry_drugs, DRUG, "no"))
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> filtered_ADR_master <- ADR_master %>% filter(psychiatry_drug_names != 
++ "no")
+> long_format <- filtered_ADR_master %>% select(psychiatry_drug_names, 
++ all_of(HLT_columns)) %>% pivot_longer(cols = starts_with("HLT_"), 
++ names_to = "HLT_Type", values_to = "HLT_Term") %>% filter(!is.na(HLT_Term) & 
++ HLT_Term != "")
+> drug_hlt_counts <- long_format %>% group_by(psychiatry_drug_names, 
++ HLT_Term) %>% summarize(Count = n(), .groups = "drop") %>% 
++ pivot_wider(names_from = HLT_Term, values_from = Count, values_fill = 0) %>% 
++ rename(Drug = psychiatry_drug_names)
+> View(drug_hlt_counts)
+> max_occurrence <- drug_hlt_counts %>% rowwise() %>% mutate(Max_HLT_Term = names(.)[which.max(c_across(starts_with("HLT_")))[1]], 
++ Max_Count = max(c_across(starts_with("HLT_")))) %>% ungroup() %>% 
++ select(Drug, Max_HLT_Term, Max_Count)
+> max_occurrence <- drug_hlt_counts %>% rowwise() %>% mutate(Max_HLT_Term = if (all(is.na(c_across(starts_with("HLT_"))))) NA_character_ else names(.)[which.max(c_across(starts_with("HLT_")))[1]], 
++ Max_Count = if (all(is.na(c_across(starts_with("HLT_"))))) NA_integer_ else max(c_across(starts_with("HLT_")), 
++ 
++ na.rm = TRUE)) %>% ungroup() %>% select(Drug, Max_HLT_Term, 
++ Max_Count)
+> View(max_occurrence)
+> View(drug_hlt_counts)
+> HLGT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> long_format <- filtered_ADR_master %>% select(psychiatry_drug_names, 
++ all_of(HLGT_columns)) %>% pivot_longer(cols = starts_with("HLGT_"), 
++ names_to = "HLGT_Type", values_to = "HLGT_Term") %>% filter(!is.na(HLGT_Term) & 
++ HLGT_Term != "")
+> drug_hlgt_counts <- long_format %>% group_by(psychiatry_drug_names, 
++ HLGT_Term) %>% summarize(Count = n(), .groups = "drop") %>% 
++ pivot_wider(names_from = HLGT_Term, values_from = Count, 
++ 
++ values_fill = 0) %>% rename(Drug = psychiatry_drug_names)
+> View(drug_hlgt_counts)
+> SOC_columns <- grep("^SOC_ABBREV_", colnames(ADR_master), value = TRUE)
+> long_format <- filtered_ADR_master %>% select(psychiatry_drug_names, 
++ all_of(SOC_columns)) %>% pivot_longer(cols = starts_with("SOC_ABBREV_"), 
++ names_to = "SOC_Type", values_to = "SOC_Term") %>% filter(!is.na(SOC_Term) & 
++ SOC_Term != "")
+> drug_SOC_counts <- long_format %>% group_by(psychiatry_drug_names, 
++ SOC_Term) %>% summarize(Count = n(), .groups = "drop") %>% 
++ pivot_wider(names_from = SOC_Term, values_from = Count, values_fill = 0) %>% 
++ rename(Drug = psychiatry_drug_names)
+> View(drug_SOC_counts)
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> long_format <- filtered_ADR_master %>% select(psychiatry_drug_names, 
++ all_of(HLT_columns)) %>% pivot_longer(cols = starts_with("HLT_"), 
++ names_to = "HLT_Type", values_to = "HLT_Term") %>% filter(!is.na(HLT_Term) & 
++ HLT_Term != "")
+> drug_hlt_counts <- long_format %>% group_by(psychiatry_drug_names, 
++ HLT_Term) %>% summarize(Count = n(), .groups = "drop") %>% 
++ pivot_wider(names_from = HLT_Term, values_from = Count, values_fill = list(Count = 0)) %>% 
++ rename(Drug = psychiatry_drug_names)
+> View(drug_hlt_table)
+> View(drug_hlt_counts)
+> hlt_term_counts <- colSums(drug_hlt_counts[, -1])
+> hlt_term_counts_df <- data.frame(HLT_Term = names(hlt_term_counts), 
++ Count = hlt_term_counts, stringsAsFactors = FALSE)
+> View(hlt_term_counts_df)
+> top_15_hlt_terms <- hlt_term_counts_df %>% arrange(desc(Count)) %>% 
++ head(15)
+> View(top_15_hlt_terms)
+> top_15_hlt_terms <- hlt_term_counts_df %>% arrange(desc(Count)) %>% 
++ head(25)
+> View(top_15_hlt_terms)
+> top_15_hlt_terms <- hlt_term_counts_df %>% arrange(desc(Count)) %>% 
++ head(30)
+> sorted_hlt_terms <- hlt_term_counts_df %>% arrange(desc(Count))
+> View(sorted_hlt_terms)
+> HLGT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> long_format <- filtered_ADR_master %>% select(psychiatry_drug_names, 
++ all_of(HLGT_columns)) %>% pivot_longer(cols = starts_with("HLGT_"), 
++ names_to = "HLGT_Type", values_to = "HLGT_Term") %>% filter(!is.na(HLGT_Term) & 
++ HLGT_Term != "")
+> drug_hlgt_counts <- long_format %>% group_by(psychiatry_drug_names, 
++ HLGT_Term) %>% summarize(Count = n(), .groups = "drop") %>% 
++ pivot_wider(names_from = HLGT_Term, values_from = Count, 
++ 
++ values_fill = 0) %>% rename(Drug = psychiatry_drug_names)
+> View(drug_hlgt_counts)
+> hlgt_term_counts <- colSums(drug_hlgt_counts[, -1])
+> hlgt_term_counts_df <- data.frame(HLT_Term = names(hlgt_term_counts), 
++ Count = hlgt_term_counts, stringsAsFactors = FALSE)
+> sorted_hlgt_terms <- hlt_term_counts_df %>% arrange(desc(Count))
+> View(sorted_hlgt_terms)
+> View(sorted_hlgt_terms)
+> sorted_hlgt_terms <- hlgt_term_counts_df %>% arrange(desc(Count))
+> View(sorted_hlgt_terms)
+> total_occurrences <- sum(hlgt_term_counts_df$Count)
+> print(total_occurrences)
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 2.35PB/s                                                                                                             [1] 135393
+> total_count <- sum(ADR_master$psychiatry_drug_names != "no")
+> result_table <- data.frame(Drug = character(), N = integer(), 
++ S = integer(), F = integer(), Unknown = integer(), stringsAsFactors = FALSE)
+> for (i in 1:nrow(ADR_master)) {
++ drug_name <- ADR_master$psychiatry_drug_names[i]
++ if (drug_name != "no") {
++ 
++ severity <- ADR_master$most_severe_outcome[i]
++ 
++ if (!(drug_name %in% result_table$Drug)) {
++ 
++ 
++ result_table <- rbind(result_table, data.frame(Drug = drug_name, 
++ 
++ 
++ 
++ N = 0, S = 0, F = 0, Unknown = 0, stringsAsFactors = FALSE))
++ 
++ 
++ }
++ 
++ result_table[result_table$Drug == drug_name, severity] <- result_table[result_table$Drug == 
++ 
++ 
++ drug_name, severity] + 1
++ 
++ }
++ }
+> result_table <- result_table %>% mutate(Total = N + S + F + Unknown, 
++ N_Percentage = (N/total_count) * 100, S_Percentage = (S/total_count) * 
++ 
++ 100, F_Percentage = (F/total_count) * 100, Unknown_Percentage = (Unknown/total_count) * 
++ 
++ 100)
+> View(result_table)
+> write.csv(result_table, file = "psych_data_2.csv", row.names = FALSE)
+> total_count <- sum(ADR_master$psychiatry_drug_names != "no")
+> result_table <- data.frame(Drug = character(), HLGT_Term = character(), 
++ HLGT_Name = character(), S_Count = integer(), stringsAsFactors = FALSE)
+> HLGT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> result_table <- data.frame(Drug = character(), HLGT_Term = character(), 
++ HLGT_Name = character(), S_Count = integer(), stringsAsFactors = FALSE)
+> HLGT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> filtered_data <- ADR_master %>% filter(psychiatry_drug_names != 
++ "no")
+> HLGT_columns <- grep("^HLGT_", colnames(filtered_data), value = TRUE)
+> result_table <- data.frame(Drug = character(), HLGT_Term = character(), 
++ S_Count = integer(), stringsAsFactors = FALSE)
+> for (col in HLGT_columns) {
++ HLGT_name <- sub("^HLGT_", "", col)
++ counts <- filtered_data %>% group_by(psychiatry_drug_names) %>% 
++ 
++ summarize(S_Count = sum(ifelse(get(col) == 1, 1, 0)), 
++ 
++ 
++ .groups = "drop") %>% mutate(HLGT_Term = HLGT_name)
++ result_table <- bind_rows(result_table, counts)
++ }
+> View(result_table)
+> HLGT_columns <- grep("^HLGT_", colnames(filtered_data), value = TRUE)
+> result_table <- data.frame(HLGT_Term = character(), S_Count = integer(), 
++ psychiatry_drug_names = character(), stringsAsFactors = FALSE)
+> for (col in HLGT_columns) {
++ HLGT_name <- sub("^HLGT_", "", col)
++ counts <- filtered_data %>% group_by(psychiatry_drug_names) %>% 
++ 
++ summarize(S_Count = sum(ifelse(get(col) == 1, 1, 0)), 
++ 
++ 
++ .groups = "drop") %>% mutate(HLGT_Term = HLGT_name) %>% 
++ 
++ filter(!is.na(psychiatry_drug_names))
++ result_table <- bind_rows(result_table, counts)
++ }
+> View(result_table)
+> HLGT_columns <- grep("^HLGT_", colnames(filtered_data), value = TRUE)
+> result_table <- data.frame(Drug = character(), stringsAsFactors = FALSE)
+> HLGT_columns <- grep("^HLGT_", colnames(filtered_data), value = TRUE)
+> result_table <- data.frame(Drug = character(), stringsAsFactors = FALSE)
+> for (col in HLGT_columns) {
++ HLGT_name <- sub("^HLGT_", "", col)
++ counts <- filtered_data %>% group_by(psychiatry_drug_names) %>% 
++ 
++ summarize(S_Count = sum(most_severe_outcome == "S" & 
++ 
++ 
++ .data[[col]] == 1, na.rm = TRUE), .groups = "drop")
++ if (nrow(result_table) == 0) {
++ 
++ result_table <- counts
++ 
++ }
++ else {
++ 
++ result_table <- merge(result_table, counts, by = "psychiatry_drug_names", 
++ 
++ 
++ all = TRUE)
++ 
++ }
++ colnames(result_table)[ncol(result_table)] <- HLGT_name
++ }
+> View(result_table)
+> HLGT_columns <- grep("^HLGT_", colnames(filtered_data), value = TRUE)
+> result_table <- data.frame(Drug = unique(filtered_data$psychiatry_drug_names), 
++ stringsAsFactors = FALSE)
+> HLGT_columns <- grep("^HLGT_", colnames(filtered_data), value = TRUE)
+> result_table <- data.frame(Drug = unique(filtered_data$psychiatry_drug_names), 
++ stringsAsFactors = FALSE)
+> View(result_table)
+> total_count <- sum(ADR_master$psychiatry_drug_names != "no")
+> result_table <- data.frame(Drug = character(), N = integer(), 
++ S = integer(), F = integer(), Unknown = integer(), stringsAsFactors = FALSE)
+> for (i in 1:nrow(ADR_master)) {
++ drug_name <- ADR_master$psychiatry_drug_names[i]
++ if (drug_name != "no") {
++ 
++ severity <- ADR_master$most_severe_outcome[i]
++ 
++ if (!(drug_name %in% result_table$Drug)) {
++ 
++ 
++ result_table <- rbind(result_table, data.frame(Drug = drug_name, 
++ 
++ 
++ 
++ N = 0, S = 0, F = 0, Unknown = 0, stringsAsFactors = FALSE))
++ 
++ 
++ }
++ 
++ result_table[result_table$Drug == drug_name, severity] <- result_table[result_table$Drug == 
++ 
++ 
++ drug_name, severity] + 1
++ 
++ }
++ }
+> result_table <- result_table %>% mutate(Total = N + S + F + Unknown, 
++ N_Percentage = (N/total_count) * 100, S_Percentage = (S/total_count) * 
++ 
++ 100, F_Percentage = (F/total_count) * 100, Unknown_Percentage = (Unknown/total_count) * 
++ 
++ 100)
+> View(result_table)
+> HLGT_columns <- grep("^HLGT_", colnames(filtered_data), value = TRUE)
+> result_table <- data.frame(Drug = character(), N = integer(), 
++ S = integer(), F = integer(), Unknown = integer(), stringsAsFactors = FALSE)
+> total_count <- sum(filtered_data$psychiatry_drug_names != "no")
+> for (drug_name in unique(filtered_data$psychiatry_drug_names)) {
++ filtered_data_S <- filtered_data %>% filter(psychiatry_drug_names == 
++ 
++ drug_name, most_severe_outcome == "S")
++ counts <- c(N = 0, S = 0, F = 0, Unknown = 0)
++ for (col in HLGT_columns) {
++ 
++ counts <- counts + summarise_at(filtered_data_S, vars(col), 
++ 
++ 
++ ~sum(. == "S" & !is.na(.))) %>% unlist() %>% as.vector()
++ 
++ }
++ counts <- c(drug_name, counts)
++ result_table <- rbind(result_table, counts)
++ }
+> HLGT_columns <- grep("^HLGT_", colnames(filtered_data), value = TRUE)
+> result_table <- data.frame(Drug = character(), N = integer(), 
++ S = integer(), F = integer(), Unknown = integer(), stringsAsFactors = FALSE)
+> total_count <- sum(filtered_data$psychiatry_drug_names != "no")
+> for (drug_name in unique(filtered_data$psychiatry_drug_names)) {
++ filtered_data_S <- filtered_data %>% filter(psychiatry_drug_names == 
++ 
++ drug_name, most_severe_outcome == "S")
++ counts <- c(N = 0, S = 0, F = 0, Unknown = 0)
++ for (col in HLGT_columns) {
++ 
++ counts <- counts + summarise(filtered_data_S, across(all_of(col), 
++ 
++ 
++ ~sum(. == "S" & !is.na(.)))) %>% unlist() %>% as.vector()
++ 
++ }
++ counts <- c(drug_name, counts)
++ result_table <- rbind(result_table, counts)
++ }
+> View(result_table)
+> HLGT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> filtered_ADR_master <- ADR_master %>% filter(psychiatry_drug_names != 
++ "no")
+> long_format <- filtered_ADR_master %>% select(psychiatry_drug_names, 
++ all_of(HLGT_columns)) %>% pivot_longer(cols = starts_with("HLGT_"), 
++ names_to = "HLGT_Type", values_to = "HLGT_Term") %>% filter(!is.na(HLGT_Term) & 
++ HLGT_Term != "")
+> drug_hlgt_counts <- long_format %>% group_by(psychiatry_drug_names, 
++ HLGT_Term) %>% summarize(Count = n(), .groups = "drop") %>% 
++ pivot_wider(names_from = HLGT_Term, values_from = Count, 
++ 
++ values_fill = 0) %>% rename(Drug = psychiatry_drug_names)
+> hlgt_term_counts <- colSums(drug_hlgt_counts[, -1])
+> hlgt_term_counts_df <- data.frame(HLT_Term = names(hlgt_term_counts), 
++ Count = hlgt_term_counts, stringsAsFactors = FALSE)
+> top_15_hlt_terms <- hlt_term_counts_df %>% arrange(desc(Count)) %>% 
++ head(15)
+> View(top_15_hlt_terms)
+> sorted_hlgt_terms <- hlgt_term_counts_df %>% arrange(desc(Count))
+> View(sorted_hlgt_terms)
+> HLGT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> filtered_ADR_master <- ADR_master %>% filter(psychiatry_drug_names != 
++ "no" & most_severe_outcome == "S")
+> long_format <- filtered_ADR_master %>% select(psychiatry_drug_names, 
++ all_of(HLGT_columns)) %>% pivot_longer(cols = starts_with("HLGT_"), 
++ names_to = "HLGT_Type", values_to = "HLGT_Term") %>% filter(!is.na(HLGT_Term) & 
++ HLGT_Term != "")
+> drug_hlgt_counts <- long_format %>% group_by(psychiatry_drug_names, 
++ HLGT_Term) %>% summarize(Count = n(), .groups = "drop") %>% 
++ pivot_wider(names_from = HLGT_Term, values_from = Count, 
++ 
++ values_fill = 0) %>% rename(Drug = psychiatry_drug_names)
+> hlgt_term_counts <- colSums(drug_hlgt_counts[, -1])
+> hlgt_term_counts_df <- data.frame(HLGT_Term = names(hlgt_term_counts), 
++ Count = hlgt_term_counts, stringsAsFactors = FALSE)
+> View(hlgt_term_counts_df)
+> sorted_hlgt_terms <- hlgt_term_counts_df %>% arrange(desc(Count))
+> View(sorted_hlgt_terms)
+> HLGT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> filtered_ADR_master_S <- ADR_master %>% filter(psychiatry_drug_names != 
++ "no" & most_severe_outcome == "S")
+> unique(ADR_master$most_severe_outcome)
+[1] "N"       "S"       "F"       "Unknown"
+> unique(filtered_ADR_master_S$most_severe_outcome)
+[1] "S"
+> filtered_ADR_master <- ADR_master %>% filter(psychiatry_drug_names != 
++ "no")
+> filtered_ADR_master_F <- ADR_master %>% filter(psychiatry_drug_names != 
++ "no" & most_severe_outcome == "F")
+> filtered_ADR_master_N <- ADR_master %>% filter(psychiatry_drug_names != 
++ "no" & most_severe_outcome == "N")
+> View(sorted_hlgt_terms)
+> HLGT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> filtered_ADR_master_F <- ADR_master %>% filter(psychiatry_drug_names != 
++ "no" & most_severe_outcome == "F")
+> long_format <- filtered_ADR_master_F %>% select(psychiatry_drug_names, 
++ all_of(HLGT_columns)) %>% pivot_longer(cols = starts_with("HLGT_"), 
++ names_to = "HLGT_Type", values_to = "HLGT_Term") %>% filter(!is.na(HLGT_Term) & 
++ HLGT_Term != "")
+> drug_hlgt_counts <- long_format %>% group_by(psychiatry_drug_names, 
++ HLGT_Term) %>% summarize(Count = n(), .groups = "drop") %>% 
++ pivot_wider(names_from = HLGT_Term, values_from = Count, 
++ 
++ values_fill = 0) %>% rename(Drug = psychiatry_drug_names)
+> hlgt_term_counts <- colSums(drug_hlgt_counts[, -1])
+> hlgt_term_counts_df <- data.frame(HLGT_Term = names(hlgt_term_counts), 
++ Count = hlgt_term_counts, stringsAsFactors = FALSE)
+> sorted_hlgt_terms <- hlgt_term_counts_df %>% arrange(desc(Count))
+> View(sorted_hlgt_terms)
+> library(readr)
+> PREPARE_drugs <- read_csv("PREPARE_drugs.csv")
+> View(PREPARE_drugs)
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> PREPARE_drugs_names <- PREPARE_drugs$PREPARE_Drugs
+> ADR_master <- ADR_master %>% mutate(PREPARE_drugs_names = ifelse(DRUG %in% 
++ PREPARE_drugs_names, DRUG, "no"))
+> drug_counts <- ADR_master %>% filter(DRUG %in% PREPARE_drugs_names) %>% 
++ group_by(DRUG) %>% summarise(total_count = n()) %>% arrange(desc(total_count))
+> drug_counts <- ADR_master %>% filter(DRUG %in% PREPARE_drugs_names) %>% 
++ group_by(DRUG) %>% summarise(total_count = n())
+> count_total_PREPARE_ADRs <- sum(ADR_master$PREPARE_drugs == 1)
+> drug_counts <- drug_counts %>% mutate(percentage = (total_count/count_total_PREPARE_ADRs) * 
++ 100)
+> ggplot(CPRD_Data, aes(x = reorder(Drug, `% CPRD Prescribing Prevalence`), 
++ y = `% YC ADR Reports`, fill = Gene)) + geom_bar(stat = "identity", 
++ position = "dodge") + geom_smooth(aes(group = 1), method = "lm", 
++ se = FALSE, color = "red") + labs(x = "% of English primary care population prescribed drug in 20 year period", 
++ y = "% of YC PGx ADR reports") + scale_fill_discrete(name = "Gene") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 60, 
++ hjust = 1), axis.text.y = element_text(angle = 0, hjust = 1, 
++ vjust = 0.5)) + scale_x_discrete(labels = function(x) sprintf("%s (%s)", 
++ x, CPRD_Data$`% CPRD Prescribing Prevalence`))
+> View(CPRD_Data)
+> CPRD_Data <- CPRD_Data %>% mutate(Label = sprintf("%s (%.2f)", 
++ Drug, `% CPRD Prescribing Prevalence`))
+> ggplot(CPRD_Data, aes(x = reorder(Label, `% CPRD Prescribing Prevalence`), 
++ y = `% YC ADR Reports`, fill = Gene)) + geom_bar(stat = "identity", 
++ position = "dodge") + geom_smooth(aes(group = 1), method = "lm", 
++ se = FALSE, color = "red") + labs(x = "% of English primary care population prescribed drug in 20 year period", 
++ y = "% of YC PGx ADR reports") + scale_fill_discrete(name = "Gene") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 60, 
++ hjust = 1), axis.text.y = element_text(angle = 0, hjust = 1, 
++ vjust = 0.5))
+> CPRD_Data <- CPRD_Data %>% mutate(Label = sprintf("%s (%.2f%%)", 
++ Drug, `% CPRD Prescribing Prevalence`))
+> ggplot(CPRD_Data, aes(x = reorder(Label, `% CPRD Prescribing Prevalence`), 
++ y = `% YC ADR Reports`, fill = Gene)) + geom_bar(stat = "identity", 
++ position = "dodge") + geom_smooth(aes(group = 1), method = "lm", 
++ se = FALSE, color = "red") + labs(x = "% of English primary care population prescribed drug in 20 year period", 
++ y = "% of YC PGx ADR reports") + scale_fill_discrete(name = "Gene") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 60, 
++ hjust = 1), axis.text.y = element_text(angle = 0, hjust = 1, 
++ vjust = 0.5))

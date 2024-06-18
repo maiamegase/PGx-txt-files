@@ -1,0 +1,923 @@
+> load("~/Downloads/MHRA/.RData")
+> library(readr)
+> PREPARE_drugs <- read_csv("PREPARE_drugs.csv")
+> View(PREPARE_drugs)
+> library(ggplot2)
+> library(dplyr)
+> library(tidyr)
+> ADR_master$PREPARE_drugs <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$PREPARE_Drugs)
+> ADR_master$CYP2C19_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C19_PREPARE)
+> ADR_master$CYP2D6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2D6_PREPARE)
+> ADR_master$SLCO1B1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$SLCO1B1_PREPARE)
+> ADR_master$OTHER_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$OTHER_PREPARE)
+> ADR_master$DPYD_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$DPYD_PREPARE)
+> ADR_master$UGT1A1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$UGT1A1_PREPARE)
+> ADR_master$VKORC1_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$VKORC1_PREPARE)
+> ADR_master$HLA_A_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_A_PREPARE)
+> ADR_master$HLA_B_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$HLA_B_PREPARE)
+> ADR_master$TPMT_PREPARE <- as.integer(ADR_master$DRUG %in% PREPARE_drugs$TPMT_PREPARE)
+> ADR_master$CYP3A5_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP3A5_PREPARE)
+> ADR_master$CYP2B6_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2B6_PREPARE)
+> ADR_master$CYP2C9_PREPARE <- as.integer(ADR_master$DRUG %in% 
++ PREPARE_drugs$CYP2C9_PREPARE)
+> ADR_master$RECVD_YEAR_1 <- as.numeric(as.character(ADR_master$RECVD_YEAR_1))
+> ADR_master$Decade <- (ADR_master$RECVD_YEAR_1%/%10) * 10
+> gene_columns <- grep("_PREPARE$", names(ADR_master), value = TRUE)
+> gene_columns <- setdiff(gene_columns, c("PREPARE_Drugs", "OTHER_PREPARE"))
+> reports_per_gene_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade) %>% summarise(across(all_of(gene_columns), 
++ ~sum(.x)), .groups = "drop")
+> total_reports_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% count(Decade)
+> percentage_per_gene_per_decade <- reports_per_gene_per_decade %>% 
++ left_join(total_reports_per_decade, by = "Decade") %>% mutate(across(all_of(gene_columns), 
++ ~(.x/n) * 100, .names = "{.col
++ }_pct")) %>% select(-n) %>% 
++ pivot_longer(cols = ends_with("_pct"), names_pattern = "(.*)_pct", 
++ 
++ names_to = "Gene", values_to = "Percentage")
+> library(stringr)
+> percentage_per_gene_per_decade <- reports_per_gene_per_decade %>% 
++ left_join(total_reports_per_decade, by = "Decade") %>% mutate(across(all_of(gene_columns), 
++ ~(.x/n) * 100, .names = "{str_remove_all(.col, '_PREPARE')
++ }_pct")) %>% 
++ select(-n) %>% pivot_longer(cols = ends_with("_pct"), names_to = "Gene", 
++ values_to = "Percentage") %>% mutate(Gene = str_remove_all(Gene, 
++ "_pct"))
+> my_colors <- c("#8dd3c7", "#ffffb3", "#bebada", "#80b1d3", "#fdb462", 
++ "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f", 
++ "#a6cee3")
+> plot_stacked_bar <- ggplot(percentage_per_gene_per_decade, aes(x = factor(Decade), 
++ y = Percentage, fill = Gene)) + geom_bar(stat = "identity") + 
++ labs(x = "Decade", y = "Percentage", title = "Percentage of ADR Reports Associated with PREPARE drugs and their associated genes per Decade") + 
++ theme_minimal() + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar)
+> View(percentage_per_gene_per_decade)
+> write.csv(percentage_per_gene_per_decade, file = "table_1.csv", 
++ row.names = FALSE)
+> write.csv(percentage_per_gene_per_decade, file = "table_2.csv", 
++ row.names = FALSE)
+> View(PREPARE_drugs)
+> SLCO1B1_drugs <- PREPARE_drugs$SLCO1B1_PREPARE
+> ADR_master <- ADR_master %>% mutate(SLCO1B1_drugs = ifelse(DRUG %in% 
++ SLCO1B1_drugs, DRUG, "no"))
+> total_reports_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% count(Decade, name = "Total_Count")
+> reports_per_SLCO1B1_drug_per_decade <- ADR_master %>% mutate(Decade = (RECVD_YEAR_1%/%10) * 
++ 10) %>% group_by(Decade, SLCO1B1_drugs) %>% summarise(Count = n(), 
++ .groups = "drop") %>% filter(SLCO1B1_drugs != "no") %>% ungroup()
+> percentage_per_SLCO1B1_drug_per_decade <- reports_per_SLCO1B1_drug_per_decade %>% 
++ left_join(total_reports_per_decade, by = "Decade") %>% mutate(Percentage = (Count/Total_Count) * 
++ 100)
+> plot_stacked_bar_SLCO1B1 <- ggplot(percentage_per_SLCO1B1_drug_per_decade, 
++ aes(x = factor(Decade), y = Percentage, fill = SLCO1B1_drugs)) + 
++ geom_bar(stat = "identity") + labs(x = "Decade", y = "Percentage of ADR Reports", 
++ title = "Percentage of ADR Reports Associated with PREPARE SLCO1B1 Drugs per Decade") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> print(plot_stacked_bar_SLCO1B1)
+> my_colors <- c("#ffed6f", "#a6cee3")
+> plot_stacked_bar_SLCO1B1 <- ggplot(percentage_per_SLCO1B1_drug_per_decade, 
++ aes(x = factor(Decade), y = Percentage, fill = SLCO1B1_drugs)) + 
++ geom_bar(stat = "identity") + labs(x = "Decade", y = "Percentage of ADR Reports", 
++ title = "Percentage of ADR Reports Associated with PREPARE SLCO1B1 Drugs per Decade") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1)) + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar_SLCO1B1)
+> my_colors <- c("#ccebc5", "#a6cee3")
+> plot_stacked_bar_SLCO1B1 <- ggplot(percentage_per_SLCO1B1_drug_per_decade, 
++ aes(x = factor(Decade), y = Percentage, fill = SLCO1B1_drugs)) + 
++ geom_bar(stat = "identity") + labs(x = "Decade", y = "Percentage of ADR Reports", 
++ title = "Percentage of ADR Reports Associated with PREPARE SLCO1B1 Drugs per Decade") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1)) + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar_SLCO1B1)
+> my_colors <- c("#ccebc5", "#8dd3c7")
+> plot_stacked_bar_SLCO1B1 <- ggplot(percentage_per_SLCO1B1_drug_per_decade, 
++ aes(x = factor(Decade), y = Percentage, fill = SLCO1B1_drugs)) + 
++ geom_bar(stat = "identity") + labs(x = "Decade", y = "Percentage of ADR Reports", 
++ title = "Percentage of ADR Reports Associated with PREPARE SLCO1B1 Drugs per Decade") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1)) + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar_SLCO1B1)
+> my_colors <- c("#80b1d3", "#8dd3c7")
+> plot_stacked_bar_SLCO1B1 <- ggplot(percentage_per_SLCO1B1_drug_per_decade, 
++ aes(x = factor(Decade), y = Percentage, fill = SLCO1B1_drugs)) + 
++ geom_bar(stat = "identity") + labs(x = "Decade", y = "Percentage of ADR Reports", 
++ title = "Percentage of ADR Reports Associated with PREPARE SLCO1B1 Drugs per Decade") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1)) + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar_SLCO1B1)
+> plot_stacked_bar_SLCO1B1 <- ggplot(percentage_per_SLCO1B1_drug_per_decade, 
++ aes(x = factor(Decade), y = Percentage, fill = SLCO1B1_drugs)) + 
++ geom_bar(stat = "identity") + labs(x = "Percentage of PGx Drug ADRs", 
++ y = "Percentage of ADR Reports", title = "Percentage of ADR Reports Associated with PREPARE SLCO1B1 Drugs per Decade") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1)) + scale_fill_manual(values = my_colors)
+> print(plot_stacked_bar_SLCO1B1)
+> library(readr)
+> Prescriber_Category <- read_csv("Prescriber_Category.csv")
+> View(Prescriber_Category)
+> prescriber_categories <- c("Cardiovascular", "Oncology", "Psychiatry", 
++ "Neurology", "Infectious_Disease", "Gastroenterology", "Rheumatology", 
++ "Cross_Specialty")
+> for (category in prescriber_categories) {
++ ADR_master[[category]] <- as.integer(ADR_master$DRUG %in% 
++ 
++ Prescriber_Category[[category]])
++ }
+> Total_PREPARE_count <- sum(ADR_master$PREPARE_drugs == 1)
+> summary <- ADR_master %>% summarise(across(all_of(prescriber_categories), 
++ sum)) %>% pivot_longer(cols = everything(), names_to = "Prescriber_Category", 
++ values_to = "Count") %>% mutate(Percentage = (Count/Total_PREPARE_count) * 
++ 100)
+> my_colors <- c("#8dd3c7", "#ffffb3", "#bebada", "#80b1d3", "#fdb462", 
++ "#b3de69", "#fccde5", "#d9d9d9", "#bc80bd", "#ccebc5", "#ffed6f", 
++ "#a6cee3")
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category, 
++ fill = Prescriber_Category)) + geom_bar(stat = "identity") + 
++ labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ 
++ x = "Percentage of PGx Drug ADRs", y = "Prescriber Category") + 
++ scale_fill_manual(values = my_colors) + theme_minimal()
+> my_colors <- c("#8dd3c7", "#ffffb3", "#bebada", "#80b1d3", "#fdb462", 
++ "#b3de69", "#fccde5", "#bc80bd", "#ccebc5", "#ffed6f", "#a6cee3")
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category, 
++ fill = Prescriber_Category)) + geom_bar(stat = "identity") + 
++ labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ 
++ x = "Percentage of PGx Drug ADRs", y = "Prescriber Category") + 
++ scale_fill_manual(values = my_colors) + theme_minimal()
+> my_colors <- c("#8dd3c7", "#ffffb3", "#bebada", "#80b1d3", "#fdb462", 
++ "#b3de69", "#bc80bd", "#ccebc5", "#ffed6f", "#a6cee3")
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category, 
++ fill = Prescriber_Category)) + geom_bar(stat = "identity") + 
++ labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ 
++ x = "Percentage of PGx Drug ADRs", y = "Prescriber Category") + 
++ scale_fill_manual(values = my_colors) + theme_minimal()
+> my_colors <- c("#8dd3c7", "#ffffb3", "#bebada", "#80b1d3", "#fdb462", 
++ "#b3de69", "#a6cee3", "#bc80bd", "#ccebc5", "#ffed6f")
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category, 
++ fill = Prescriber_Category)) + geom_bar(stat = "identity") + 
++ labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ 
++ x = "Percentage of PGx Drug ADRs", y = "Prescriber Category") + 
++ scale_fill_manual(values = my_colors) + theme_minimal()
+> View(summary)
+> write.csv(summary, file = "table_6.csv", row.names = FALSE)
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category, 
++ fill = Prescriber_Category)) + geom_bar(stat = "identity") + 
++ labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ 
++ x = "Percentage of PGx Drug ADRs", y = "Prescriber Category") + 
++ theme(legend.position = "none") + scale_fill_manual(values = my_colors) + 
++ theme_minimal()
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category, 
++ fill = Prescriber_Category)) + geom_bar(stat = "identity") + 
++ labs(title = "Percentage of PREPARE Drugs by Prescriber Category", 
++ 
++ x = "Percentage of PGx Drug ADRs", y = "Prescriber Category") + 
++ scale_fill_manual(values = my_colors) + theme_minimal() + 
++ theme(legend.position = "none")
+> ggplot(summary, aes(x = Percentage, y = Prescriber_Category, 
++ fill = Prescriber_Category)) + geom_bar(stat = "identity") + 
++ labs(x = "Percentage of PGx Drug ADRs", y = "Prescriber Category") + 
++ scale_fill_manual(values = my_colors) + theme_minimal() + 
++ theme(legend.position = "none")
+> R.Version()
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 5.41PB/s                                                                                                  indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 1.66PB/s                                                                                                  $platform
+[1] "aarch64-apple-darwin20"
+
+$arch
+[1] "aarch64"
+
+$os
+[1] "darwin20"
+
+$system
+[1] "aarch64, darwin20"
+
+$status
+[1] ""
+
+$major
+[1] "4"
+
+$minor
+[1] "4.0"
+
+$year
+[1] "2024"
+
+$month
+[1] "04"
+
+$day
+[1] "24"
+
+$`svn rev`
+[1] "86474"
+
+$language
+[1] "R"
+
+$version.string
+[1] "R version 4.4.0 (2024-04-24)"
+
+$nickname
+[1] "Puppy Cup"
+
+> library(readr)
+> CPRD_Data <- read_csv("CPRD_Data.csv")
+> View(CPRD_Data)
+> View(CPRD_Data)
+> ggplot(CPRD_Data, aes(x = reorder(`% CPRD Prescribing Prevalence`, 
++ Drug), y = `% YC ADR Reports`, fill = Gene)) + geom_bar(stat = "identity", 
++ position = "dodge") + labs(title = "% of Drug Prescribing Prevalence vs % YC ADR Reports", 
++ x = "Drug", y = "% YC ADR Reports") + scale_fill_discrete(name = "Gene") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(Drug, `% CPRD Prescribing Prevalence`), 
++ y = `% YC ADR Reports`, fill = Gene)) + geom_bar(stat = "identity", 
++ position = "dodge") + geom_smooth(aes(group = 1), method = "lm", 
++ se = FALSE, color = "red") + labs(title = "% of Drug Prescribing Prevalence vs % YC ADR Reports", 
++ x = "Drug", y = "% YC ADR Reports") + scale_fill_discrete(name = "Gene") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(Drug, `% CPRD Prescribing Prevalence`), 
++ y = `% YC ADR Reports`, fill = Gene)) + geom_bar(stat = "identity", 
++ position = "dodge") + geom_smooth(aes(group = 1), method = "lm", 
++ se = FALSE, color = "red") + labs(x = "% of English primary care population prescribed drug in 20 year period", 
++ y = "% of YC PGx ADR reports") + scale_fill_discrete(name = "Gene") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 45, 
++ hjust = 1))
+> ggplot(CPRD_Data, aes(x = reorder(Drug, `% CPRD Prescribing Prevalence`), 
++ y = `% YC ADR Reports`, fill = Gene)) + geom_bar(stat = "identity", 
++ position = "dodge") + geom_smooth(aes(group = 1), method = "lm", 
++ se = FALSE, color = "red") + labs(title = "% of Drug Prescribing Prevalence vs % YC ADR Reports", 
++ x = "% of each PREPARE Drugs Prescriber Prevalence", y = "% YC ADR Reports") + 
++ scale_fill_discrete(name = "Gene") + theme_minimal() + theme(axis.text.x = element_text(angle = 60, 
++ hjust = 1), axis.text.y = element_text(angle = 0, hjust = 1, 
++ vjust = 0.5)) + scale_x_discrete(labels = function(x) sprintf("%s (%s)", 
++ x, CPRD_Data$`% CPRD Prescribing Prevalence`))
+> ggplot(CPRD_Data, aes(x = reorder(Drug, `% CPRD Prescribing Prevalence`), 
++ y = `% YC ADR Reports`, fill = Gene)) + geom_bar(stat = "identity", 
++ position = "dodge") + geom_smooth(aes(group = 1), method = "lm", 
++ se = FALSE, color = "red") + labs(x = "% of English primary care population prescribed drug in 20 year period", 
++ y = "% of YC PGx ADR reports") + scale_fill_discrete(name = "Gene") + 
++ theme_minimal() + theme(axis.text.x = element_text(angle = 60, 
++ hjust = 1), axis.text.y = element_text(angle = 0, hjust = 1, 
++ vjust = 0.5)) + scale_x_discrete(labels = function(x) sprintf("%s (%s)", 
++ x, CPRD_Data$`% CPRD Prescribing Prevalence`))
+> library(readr)
+> psychiatry_casestudy <- read_csv("psychiatry_casestudy.csv")
+> View(psychiatry_casestudy)
+> ADR_master$psychiatry_2 <- as.integer(ADR_master$DRUG %in% psychiatry_casestudy$Psychiatry_2)
+> library(tidyr)
+> MEDdra_psych <- c("Cardiac arrhythmias")
+> create_new_column <- function(data) {
++ hlgt_columns <- grep("^HLGT_", colnames(data), value = TRUE)
++ cardiac_arrhythmias_presence <- rowSums(select(data, all_of(hlgt_columns)) == 
++ 
++ "Cardiac arrhythmias", na.rm = TRUE)
++ data <- data %>% mutate(HLGT_psych = case_when(psychiatry_2 == 
++ 
++ 1 & cardiac_arrhythmias_presence > 0 ~ "1", psychiatry_2 == 
++ 
++ 1 & cardiac_arrhythmias_presence == 0 ~ "0", psychiatry_2 == 
++ 
++ 0 ~ "other", TRUE ~ NA_character_))
++ return(data)
++ }
+> ADR_master <- create_new_column(ADR_master)
+> psychiatry_drugs <- psychiatry_casestudy$Psychiatry_2
+> column_names <- grep("^NONSERIOUS_SERIOUS_FATAL_NSF_", names(ADR_master), 
++ value = TRUE)
+> ADR_master <- ADR_master %>% mutate(most_severe_outcome = apply(select(., 
++ all_of(column_names)), 1, function(row) {
++ if (all(is.na(row) | row == FALSE)) {
++ 
++ "Unknown"
++ 
++ }
++ else {
++ 
++ rank <- c(N = 1, S = 2, F = 3)
++ 
++ non_na_values <- na.omit(row)
++ 
++ non_false_values <- non_na_values[non_na_values != FALSE]
++ 
++ max_rank <- max(rank[non_false_values], na.rm = TRUE)
++ 
++ names(rank)[rank == max_rank]
++ 
++ }
++ }))
+> create_new_column <- function(data) {
++ hlgt_columns <- grep("^HLGT_", colnames(data), value = TRUE)
++ cardiac_arrhythmias_presence <- rowSums(select(data, all_of(hlgt_columns)) == 
++ 
++ "Cardiac arrhythmias", na.rm = TRUE)
++ data <- data %>% mutate(HLGT_psych = case_when(psychiatry_2 == 
++ 
++ 1 & cardiac_arrhythmias_presence > 0 ~ "1", psychiatry_2 == 
++ 
++ 1 & cardiac_arrhythmias_presence == 0 ~ "0", psychiatry_2 == 
++ 
++ 0 ~ "other", TRUE ~ NA_character_))
++ return(data)
++ }
+> ADR_master <- create_new_column(ADR_master)
+> outcome_counts <- ADR_master %>% group_by(HLGT_psych, most_severe_outcome) %>% 
++ summarise(N = sum(most_severe_outcome == "N", na.rm = TRUE), 
++ 
++ S = sum(most_severe_outcome == "S", na.rm = TRUE), F = sum(most_severe_outcome == 
++ 
++ 
++ "F", na.rm = TRUE), Unknown = sum(is.na(most_severe_outcome))) %>% 
++ ungroup()
+> psychiatry_drugs <- psychiatry_casestudy$Psychiatry_2
+> ADR_master <- ADR_master %>% mutate(psychiatry_drug_names = ifelse(DRUG %in% 
++ psychiatry_drugs, DRUG, "no"))
+> total_count <- sum(ADR_master$psychiatry_drug_names != "no")
+> result_table <- data.frame(Condition = c("Cardiac arrhythmias", 
++ "Other"), stringsAsFactors = FALSE)
+> for (i in 1:nrow(ADR_master)) {
++ if (ADR_master$psychiatry_drug_names[i] != "no") {
++ 
++ drug_name <- ADR_master$psychiatry_drug_names[i]
++ 
++ HLGT_psych_value <- ADR_master$HLGT_psych[i]
++ 
++ if (!drug_name %in% colnames(result_table)) {
++ 
++ 
++ result_table[[drug_name]] <- 0
++ 
++ 
++ }
++ 
++ if (HLGT_psych_value == 1) {
++ 
++ 
++ result_table[result_table$Condition == "Cardiac arrhythmias", 
++ 
++ 
++ 
++ drug_name] <- result_table[result_table$Condition == 
++ 
++ 
++ 
++ "Cardiac arrhythmias", drug_name] + 1
++ 
++ 
++ }
++ 
++ else if (HLGT_psych_value == 0) {
++ 
++ 
++ result_table[result_table$Condition == "Other", drug_name] <- result_table[result_table$Condition == 
++ 
++ 
++ 
++ "Other", drug_name] + 1
++ 
++ 
++ }
++ 
++ }
++ }
+> result_table_percent <- result_table
+> for (drug in colnames(result_table)[-1]) {
++ result_table_percent[result_table$Condition == "Cardiac arrhythmias", 
++ 
++ drug] <- (result_table[result_table$Condition == "Cardiac arrhythmias", 
++ 
++ drug]/total_count) * 100
++ result_table_percent[result_table$Condition == "Other", drug] <- (result_table[result_table$Condition == 
++ 
++ "Other", drug]/total_count) * 100
++ }
+> View(result_table_percent)
+> View(result_table)
+> write.csv(result_table, file = "psych_data.csv", row.names = FALSE)
+> write.csv(result_table_percent, file = "psych_data.csv", row.names = FALSE)
+> write.csv(result_table, file = "psych_data.csv", row.names = FALSE)
+> unique(ADR_master$psychiatry_drug_names)
+indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 2.85PB/s                                                                                                  indexed 0B in  0s, 0B/sindexed 1.00TB in  0s, 4.77PB/s                                                                                                              [1] "no"             "NORTRIPTYLINE"  "CLOMIPRAMINE"   "HALOPERIDOL"    "AMITRIPTYLINE"  "PAROXETINE"    
+ [7] "ZUCLOPENTHIXOL" "VENLAFAXINE"    "ESCITALOPRAM"   "PIMOZIDE"       "IMIPRAMINE"     "SERTRALINE"    
+[13] "ARIPIPRAZOLE"   "DOXEPIN"        "CITALOPRAM"    
+> total_count <- sum(ADR_master$psychiatry_drug_names != "no")
+> result_table <- data.frame(Condition = c("Cardiac arrhythmias", 
++ "Other"), stringsAsFactors = FALSE)
+> total_count <- sum(ADR_master$psychiatry_drug_names != "no")
+> result_table <- data.frame(Condition = c("Cardiac arrhythmias", 
++ "Other"), stringsAsFactors = FALSE)
+> unique_drugs <- unique(ADR_master$psychiatry_drug_names)
+> unique_drugs <- unique_drugs[unique_drugs != "no"]
+> for (drug in unique_drugs) {
++ result_table[[paste0(drug, "_N")]] <- 0
++ result_table[[paste0(drug, "_S")]] <- 0
++ result_table[[paste0(drug, "_F")]] <- 0
++ result_table[[paste0(drug, "_Unknown")]] <- 0
++ }
+> for (i in 1:nrow(ADR_master)) {
++ if (ADR_master$psychiatry_drug_names[i] != "no") {
++ 
++ drug_name <- ADR_master$psychiatry_drug_names[i]
++ 
++ HLGT_psych_value <- ADR_master$HLGT_psych[i]
++ 
++ severity <- ADR_master$most_severe_outcome[i]
++ 
++ if (HLGT_psych_value == 1) {
++ 
++ 
++ result_table[result_table$Condition == "Cardiac arrhythmias", 
++ 
++ 
++ 
++ paste0(drug_name, "_", severity)] <- result_table[result_table$Condition == 
++ 
++ 
++ 
++ "Cardiac arrhythmias", paste0(drug_name, "_", 
++ 
++ 
++ 
++ severity)] + 1
++ 
++ 
++ }
++ 
++ else if (HLGT_psych_value == 0) {
++ 
++ 
++ result_table[result_table$Condition == "Other", paste0(drug_name, 
++ 
++ 
++ 
++ "_", severity)] <- result_table[result_table$Condition == 
++ 
++ 
++ 
++ "Other", paste0(drug_name, "_", severity)] + 
++ 
++ 
++ 
++ 1
++ 
++ 
++ }
++ 
++ }
++ }
+> View(result_table)
+> total_count <- sum(ADR_master$psychiatry_drug_names != "no")
+> result_table <- data.frame(Drug = character(), Event = character(), 
++ N = integer(), S = integer(), F = integer(), Unknown = integer(), 
++ stringsAsFactors = FALSE)
+> for (i in 1:nrow(ADR_master)) {
++ if (ADR_master$psychiatry_drug_names[i] != "no") {
++ 
++ drug_name <- ADR_master$psychiatry_drug_names[i]
++ 
++ HLGT_psych_value <- ADR_master$HLGT_psych[i]
++ 
++ severity <- ADR_master$most_severe_outcome[i]
++ 
++ event <- if (HLGT_psych_value == 1) 
++ 
++ 
++ "Cardiac arrhythmias"
++ 
++ else "Other"
++ 
++ if (!any(result_table$Drug == drug_name & result_table$Event == 
++ 
++ 
++ event)) {
++ 
++ 
++ result_table <- rbind(result_table, data.frame(Drug = drug_name, 
++ 
++ 
++ 
++ Event = event, N = 0, S = 0, F = 0, Unknown = 0, 
++ 
++ 
++ 
++ stringsAsFactors = FALSE))
++ 
++ 
++ }
++ 
++ result_table[result_table$Drug == drug_name & result_table$Event == 
++ 
++ 
++ event, severity] <- result_table[result_table$Drug == 
++ 
++ 
++ drug_name & result_table$Event == event, severity] + 
++ 
++ 
++ 1
++ 
++ }
++ }
+> result_table <- result_table %>% group_by(Drug) %>% mutate(Total = sum(N, 
++ S, F, Unknown), N_Percentage = (N/Total) * 100, S_Percentage = (S/Total) * 
++ 100, F_Percentage = (F/Total) * 100, Unknown_Percentage = (Unknown/Total) * 
++ 100) %>% ungroup()
+> View(result_table)
+> write.csv(result_table, file = "psych_data.csv", row.names = FALSE)
+> total_count <- sum(ADR_master$psychiatry_drug_names != "no")
+> result_table <- data.frame(Drug = character(), Event = character(), 
++ N = integer(), S = integer(), F = integer(), Unknown = integer(), 
++ stringsAsFactors = FALSE)
+> for (i in 1:nrow(ADR_master)) {
++ if (ADR_master$psychiatry_drug_names[i] != "no") {
++ 
++ drug_name <- ADR_master$psychiatry_drug_names[i]
++ 
++ HLGT_psych_value <- ADR_master$HLGT_psych[i]
++ 
++ severity <- ADR_master$most_severe_outcome[i]
++ 
++ event <- if (HLGT_psych_value == 1) 
++ 
++ 
++ "Cardiac arrhythmias"
++ 
++ else "Other"
++ 
++ if (!any(result_table$Drug == drug_name & result_table$Event == 
++ 
++ 
++ event)) {
++ 
++ 
++ result_table <- rbind(result_table, data.frame(Drug = drug_name, 
++ 
++ 
++ 
++ Event = event, N = 0, S = 0, F = 0, Unknown = 0, 
++ 
++ 
++ 
++ stringsAsFactors = FALSE))
++ 
++ 
++ }
++ 
++ result_table[result_table$Drug == drug_name & result_table$Event == 
++ 
++ 
++ event, severity] <- result_table[result_table$Drug == 
++ 
++ 
++ drug_name & result_table$Event == event, severity] + 
++ 
++ 
++ 1
++ 
++ }
++ }
+> result_table <- result_table %>% group_by(Drug) %>% mutate(Total = sum(N, 
++ S, F, Unknown), N_Percentage = (N/Total) * 100, S_Percentage = (S/Total) * 
++ 100, F_Percentage = (F/Total) * 100, Unknown_Percentage = (Unknown/Total) * 
++ 100) %>% ungroup()
+> result_table$Event <- factor(result_table$Event, levels = c("Cardiac arrhythmias", 
++ "Other"))
+> View(result_table)
+> result_table$Event <- factor(result_table$Event, levels = c("Cardiac arrhythmias", 
++ "Other"))
+> View(result_table)
+> View(result_table)
+> View(result_table)
+> result_table$Event <- factor(result_table$Event, levels = c("Cardiac arrhythmias", 
++ "Other"))
+> result_table <- result_table %>% arrange(Event, Drug)
+> View(result_table)
+> write.csv(result_table, file = "psych_data.csv", row.names = FALSE)
+> sum(ADR_master$psychiatry_drug_names != "no")
+[1] 48315
+> total_count <- sum(ADR_master$psychiatry_drug_names != "no")
+> result_table <- data.frame(Drug = character(), Event = character(), 
++ N = integer(), S = integer(), F = integer(), Unknown = integer(), 
++ stringsAsFactors = FALSE)
+> for (i in 1:nrow(ADR_master)) {
++ if (ADR_master$psychiatry_drug_names[i] != "no") {
++ 
++ drug_name <- ADR_master$psychiatry_drug_names[i]
++ 
++ HLGT_psych_value <- ADR_master$HLGT_psych[i]
++ 
++ severity <- ADR_master$most_severe_outcome[i]
++ 
++ event <- if (HLGT_psych_value == 1) 
++ 
++ 
++ "Cardiac arrhythmias"
++ 
++ else "Other"
++ 
++ if (!any(result_table$Drug == drug_name & result_table$Event == 
++ 
++ 
++ event)) {
++ 
++ 
++ result_table <- rbind(result_table, data.frame(Drug = drug_name, 
++ 
++ 
++ 
++ Event = event, N = 0, S = 0, F = 0, Unknown = 0, 
++ 
++ 
++ 
++ stringsAsFactors = FALSE))
++ 
++ 
++ }
++ 
++ result_table[result_table$Drug == drug_name & result_table$Event == 
++ 
++ 
++ event, severity] <- result_table[result_table$Drug == 
++ 
++ 
++ drug_name & result_table$Event == event, severity] + 
++ 
++ 
++ 1
++ 
++ }
++ }
+> result_table$Event <- factor(result_table$Event, levels = c("Cardiac arrhythmias", 
++ "Other"))
+> result_table <- result_table %>% arrange(Event, Drug)
+> View(result_table)
+> result_table <- result_table %>% mutate(N_Percentage = (N/total_count) * 
++ 100, S_Percentage = (S/total_count) * 100, F_Percentage = (F/total_count) * 
++ 100, Unknown_Percentage = (Unknown/total_count) * 100)
+> View(result_table)
+> write.csv(result_table, file = "psych_data.csv", row.names = FALSE)
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> terms_count_table <- data.frame(Term = character(), Count = integer(), 
++ stringsAsFactors = FALSE)
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> terms_count_table <- data.frame(Term = character(), Count = integer(), 
++ stringsAsFactors = FALSE)
+> for (i in 1:nrow(ADR_master)) {
++ if (ADR_master$psychiatry_drug_names[i] != "no" && !is.na(ADR_master$psychiatry_drug_names[i])) {
++ 
++ for (col in HLT_columns) {
++ 
++ 
++ term <- ADR_master[i, col]
++ 
++ 
++ if (!is.na(term) && term != "") {
++ 
++ 
++ 
++ if (term %in% terms_count_table$Term) {
++ 
++ 
++ 
++   terms_count_table$Count[terms_count_table$Term == 
++ 
++ 
++ 
++ 
++ term] <- terms_count_table$Count[terms_count_table$Term == 
++ 
++ 
++ 
++ 
++ term] + 1
++ 
++ 
++ 
++ 
++ }
++ 
++ 
++ 
++ else {
++ 
++ 
++ 
++   terms_count_table <- rbind(terms_count_table, 
++ 
++ 
++ 
++ 
++ data.frame(Term = term, Count = 1, stringsAsFactors = FALSE))
++ 
++ 
++ 
++ 
++ }
++ 
++ 
++ 
++ }
++ 
++ 
++ }
++ 
++ }
++ }
+> View(terms_count_table)
+> HLGT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> terms_count_table <- data.frame(Term = character(), Count = integer(), 
++ stringsAsFactors = FALSE)
+> for (i in 1:nrow(ADR_master)) {
++ if (ADR_master$psychiatry_drug_names[i] != "no" && !is.na(ADR_master$psychiatry_drug_names[i])) {
++ 
++ for (col in HLGT_columns) {
++ 
++ 
++ term <- ADR_master[i, col]
++ 
++ 
++ if (!is.na(term) && term != "") {
++ 
++ 
++ 
++ if (term %in% terms_count_table$Term) {
++ 
++ 
++ 
++   terms_count_table$Count[terms_count_table$Term == 
++ 
++ 
++ 
++ 
++ term] <- terms_count_table$Count[terms_count_table$Term == 
++ 
++ 
++ 
++ 
++ term] + 1
++ 
++ 
++ 
++ 
++ }
++ 
++ 
++ 
++ else {
++ 
++ 
++ 
++   terms_count_table <- rbind(terms_count_table, 
++ 
++ 
++ 
++ 
++ data.frame(Term = term, Count = 1, stringsAsFactors = FALSE))
++ 
++ 
++ 
++ 
++ }
++ 
++ 
++ 
++ }
++ 
++ 
++ }
++ 
++ }
++ }
+> View(terms_count_table)
+> HLT_columns <- grep("^HLGT_", colnames(ADR_master), value = TRUE)
+> terms_count_table <- data.frame(Term = character(), Count = integer(), 
++ stringsAsFactors = FALSE)
+> for (i in 1:nrow(ADR_master)) {
++ if (ADR_master$psychiatry_drug_names[i] != "no" && !is.na(ADR_master$psychiatry_drug_names[i])) {
++ 
++ for (col in HLT_columns) {
++ 
++ 
++ term <- ADR_master[i, col]
++ 
++ 
++ if (!is.na(term) && term != "") {
++ 
++ 
++ 
++ if (term %in% terms_count_table$Term) {
++ 
++ 
++ 
++   terms_count_table$Count[terms_count_table$Term == 
++ 
++ 
++ 
++ 
++ term] <- terms_count_table$Count[terms_count_table$Term == 
++ 
++ 
++ 
++ 
++ term] + 1
++ 
++ 
++ 
++ 
++ }
++ 
++ 
++ 
++ else {
++ 
++ 
++ 
++   terms_count_table <- rbind(terms_count_table, 
++ 
++ 
++ 
++ 
++ data.frame(Term = term, Count = 1, stringsAsFactors = FALSE))
++ 
++ 
++ 
++ 
++ }
++ 
++ 
++ 
++ }
++ 
++ 
++ }
++ 
++ }
++ }
+> View(terms_count_table)
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> drug_names <- unique(ADR_master$psychiatry_drug_names)
+> drug_names <- drug_names[drug_names != "no"]
+> drug_hlt_table <- data.frame(matrix(ncol = length(HLT_columns) + 
++ 1, nrow = length(drug_names)))
+> colnames(drug_hlt_table) <- c("Drug", HLT_columns)
+> drug_hlt_table$Drug <- drug_names
+> drug_hlt_table[, HLT_columns] <- 0
+> for (i in 1:nrow(ADR_master)) {
++ if (ADR_master$psychiatry_drug_names[i] != "no" && !is.na(ADR_master$psychiatry_drug_names[i])) {
++ 
++ drug_name <- ADR_master$psychiatry_drug_names[i]
++ 
++ for (col in HLT_columns) {
++ 
++ 
++ term <- ADR_master[i, col]
++ 
++ 
++ if (!is.na(term) && term != "" && term != "0") {
++ 
++ 
++ 
++ drug_hlt_table[drug_hlt_table$Drug == drug_name, 
++ 
++ 
++ 
++   col] <- drug_hlt_table[drug_hlt_table$Drug == 
++ 
++ 
++ 
++   drug_name, col] + 1
++ 
++ 
++ 
++ }
++ 
++ 
++ }
++ 
++ }
++ }
+> View(drug_hlt_table)
+> HLT_columns <- grep("^HLT_", colnames(ADR_master), value = TRUE)
+> drug_names <- unique(ADR_master$psychiatry_drug_names)
+> drug_names <- drug_names[drug_names != "no"]
+> unique_HLT_terms <- unique(unlist(ADR_master[HLT_columns]))
+> drug_hlt_table <- data.frame(matrix(ncol = length(unique_HLT_terms) + 
++ 1, nrow = length(drug_names)))
+> colnames(drug_hlt_table) <- c("Drug", unique_HLT_terms)
+> drug_hlt_table$Drug <- drug_names
